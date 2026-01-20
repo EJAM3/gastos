@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GASTOS | Control en Vivo</title>
+    
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><rect width=%22100%22 height=%22100%22 rx=%2230%22 fill=%22%2327ae60%22/><text y=%22.85em%22 font-size=%2260%22 x=%2220%22>💰</text></svg>">
+
+    <style>
+        :root {
+            --bg-color: #e0e5ec;
+            --primary-color: #2c3e50;
+            --success-color: #27ae60;
+            --error-color: #e53e3e;
+            --shadow-light: #ffffff;
+            --shadow-dark: #a3b1c6;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            font-family: 'Inter', -apple-system, sans-serif;
+            padding: 40px 20px;
+        }
+
+        /* NOTIFICACIÓN TOAST */
+        #notification {
+            position: fixed;
+            top: -100px;
+            left: 50%;
+            transform: translateX(-50%);
+            padding: 15px 30px;
+            border-radius: 50px;
+            color: white;
+            font-weight: bold;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+            transition: all 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+            z-index: 1000;
+        }
+        #notification.show { top: 30px; }
+
+        .card {
+            width: 100%;
+            max-width: 400px;
+            background: var(--bg-color);
+            border-radius: 30px;
+            padding: 35px 25px;
+            box-shadow: 20px 20px 60px var(--shadow-dark), -20px -20px 60px var(--shadow-light);
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        h2 { margin-bottom: 25px; letter-spacing: 2px; font-weight: 900; color: var(--primary-color); }
+
+        input {
+            width: 100%;
+            padding: 20px;
+            border-radius: 15px;
+            border: none;
+            background: var(--bg-color);
+            box-shadow: inset 6px 6px 12px var(--shadow-dark), inset -6px -6px 12px var(--shadow-light);
+            font-size: 1.1rem;
+            color: var(--primary-color);
+            outline: none;
+            box-sizing: border-box;
+            text-align: center;
+        }
+
+        .hint { font-size: 0.75rem; color: #718096; margin: 15px 0; font-weight: 600; }
+
+        button {
+            width: 100%;
+            padding: 18px;
+            border-radius: 15px;
+            border: none;
+            background: var(--bg-color);
+            color: var(--success-color);
+            font-weight: 800;
+            font-size: 1rem;
+            cursor: pointer;
+            box-shadow: 8px 8px 16px var(--shadow-dark), -8px -8px 16px var(--shadow-light);
+            transition: all 0.2s;
+            text-transform: uppercase;
+        }
+
+        button:active { box-shadow: inset 4px 4px 8px var(--shadow-dark), inset -4px -4px 8px var(--shadow-light); }
+
+        /* LISTADO DE GASTOS */
+        .history-container { width: 100%; max-width: 400px; }
+        .history-title { font-weight: 800; margin-bottom: 15px; color: var(--primary-color); opacity: 0.7; }
+
+        .expense-item {
+            background: var(--bg-color);
+            padding: 15px 20px;
+            border-radius: 15px;
+            box-shadow: 5px 5px 10px var(--shadow-dark), -5px -5px 10px var(--shadow-light);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            animation: fadeIn 0.4s ease-out;
+        }
+
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+        .item-name { font-weight: 700; color: var(--primary-color); }
+        .item-price { font-weight: 900; color: var(--success-color); }
+    </style>
+</head>
+<body>
+
+    <div id="notification">Gasto guardado</div>
+
+    <div class="card">
+        <h2>GASTOS</h2>
+        <input type="text" id="expenseInput" placeholder="Ej: Pizza, 25.00" autocomplete="off">
+        <p class="hint">SEPARA CON COMA: OBJETO, PRECIO</p>
+        <button id="sendBtn" onclick="saveData()">Anotar y Guardar</button>
+    </div>
+
+    <div class="history-container" id="historyBox" style="display:none;">
+        <div class="history-title">RECIÉN ANOTADO:</div>
+        <div id="historyList"></div>
+    </div>
+
+    <script>
+        function notify(text, color) {
+            const n = document.getElementById('notification');
+            n.innerText = text; n.style.backgroundColor = color;
+            n.classList.add('show');
+            setTimeout(() => n.classList.remove('show'), 3500);
+        }
+
+        async function saveData() {
+            const input = document.getElementById('expenseInput');
+            const btn = document.getElementById('sendBtn');
+            const val = input.value.trim();
+
+            if (!val.includes(',')) {
+                notify("⚠️ Usa la coma: Objeto, Precio", "#e53e3e");
+                return;
+            }
+
+            // TU ID DE SCRIPT ACTUALIZADO
+            const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbx0ojF4f49KPja8vmtCvjXPYdzwLN_91bMSn2t8sFZVjqh_DOkLsSEGlFRBdsBAOn5a/exec";
+
+            btn.disabled = true;
+            btn.innerText = "REGISTRANDO...";
+
+            try {
+                await fetch(WEB_APP_URL, {
+                    method: 'POST',
+                    mode: 'no-cors',
+                    body: JSON.stringify({ content: val })
+                });
+
+                // Añadir a la lista visual
+                const [nombre, precio] = val.split(',');
+                document.getElementById('historyBox').style.display = 'block';
+                const list = document.getElementById('historyList');
+                const item = document.createElement('div');
+                item.className = 'expense-item';
+                item.innerHTML = `<span class="item-name">${nombre.trim()}</span><span class="item-price">$${precio.trim()}</span>`;
+                list.insertBefore(item, list.firstChild);
+
+                notify("✅ ¡Gasto en Excel!", "#27ae60");
+                input.value = ""; 
+
+            } catch (error) {
+                notify("❌ Error de red", "#e53e3e");
+            } finally {
+                btn.disabled = false;
+                btn.innerText = "Anotar y Guardar";
+            }
+        }
+    </script>
+</body>
+</html>
