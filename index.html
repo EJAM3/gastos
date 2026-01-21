@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <meta name="apple-mobile-web-app-capable" content="yes">
-    <title>Finance Master Real-Time</title>
+    <title>Finance Master 360 Plus</title>
     <style>
         :root {
             --bg: #e0e5ec; --text: #2c3e50; --shadow: #a3b1c6; --light: #ffffff;
@@ -17,33 +17,32 @@
         body { background-color: var(--bg); font-family: -apple-system, sans-serif; margin: 0; padding-bottom: 30px; transition: 0.5s; }
         
         nav { display: flex; justify-content: space-around; padding: 15px; background: var(--bg); position: sticky; top: 0; z-index: 100; box-shadow: 0 4px 10px var(--shadow); }
-        nav span { font-weight: 800; color: #7f8c8d; padding: 8px 12px; border-radius: 12px; font-size: 0.7rem; }
+        nav span { font-weight: 800; color: #7f8c8d; padding: 8px 12px; border-radius: 12px; font-size: 0.65rem; }
         nav span.active { color: var(--text); box-shadow: inset 4px 4px 8px var(--shadow), inset -4px -4px 8px var(--light); }
 
-        .page { display: none; padding: 20px; flex-direction: column; align-items: center; animation: fadeIn 0.3s; }
+        .page { display: none; padding: 20px; animation: fadeIn 0.3s; }
         .page.active { display: block; }
         @keyframes fadeIn { from {opacity:0} to {opacity:1} }
 
-        .card { width: 100%; max-width: 350px; background: var(--bg); padding: 20px; border-radius: 25px; box-shadow: 10px 10px 20px var(--shadow), -10px -10px 20px var(--light); box-sizing: border-box; margin: 0 auto 20px; }
+        .card { width: 100%; max-width: 380px; background: var(--bg); padding: 20px; border-radius: 25px; box-shadow: 10px 10px 20px var(--shadow), -10px -10px 20px var(--light); box-sizing: border-box; margin: 0 auto 20px; }
         
-        .health-bar { width: 100%; height: 10px; background: var(--bg); border-radius: 5px; margin: 10px 0; box-shadow: inset 2px 2px 5px var(--shadow), inset -2px -2px 5px var(--light); overflow: hidden; }
-        .health-fill { height: 100%; width: 0%; background: var(--green); transition: 0.5s; }
+        .health-bar { width: 100%; height: 8px; background: var(--bg); border-radius: 4px; margin: 8px 0; box-shadow: inset 2px 2px 4px var(--shadow), inset -2px -2px 4px var(--light); overflow: hidden; }
+        .health-fill { height: 100%; width: 0%; background: var(--green); transition: 0.6s ease; }
 
-        .neubtn { width: 100%; padding: 15px; border-radius: 12px; border: none; background: var(--bg); font-weight: 800; box-shadow: 5px 5px 10px var(--shadow), -5px -5px 10px var(--light); color: var(--text); cursor: pointer; }
+        .neubtn { width: 100%; padding: 15px; border-radius: 12px; border: none; background: var(--bg); font-weight: 800; box-shadow: 5px 5px 10px var(--shadow), -5px -5px 10px var(--light); color: var(--text); }
         .neubtn:active { box-shadow: inset 3px 3px 6px var(--shadow), inset -3px -3px 6px var(--light); }
 
         input { width: 100%; padding: 12px; border-radius: 12px; border: none; margin-bottom: 10px; background: var(--bg); box-shadow: inset 4px 4px 8px var(--shadow), inset -4px -4px 8px var(--light); font-size: 1rem; outline: none; text-align: center; color: var(--text); box-sizing: border-box; }
 
-        .plan-row { padding: 12px 0; border-bottom: 1px solid rgba(0,0,0,0.05); }
-        .plan-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 5px; }
-        .plan-input-perc { width: 45px !important; margin: 0 !important; padding: 3px !important; font-size: 0.7rem !important; }
+        .plan-row { padding: 10px 0; border-bottom: 1px solid rgba(0,0,0,0.03); }
+        .plan-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px; }
+        .plan-input-perc { width: 42px !important; margin: 0 !important; padding: 2px !important; font-size: 0.7rem !important; font-weight: bold; }
         
-        .cat-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-bottom: 15px; }
-        .cat-item { padding: 12px; border-radius: 12px; font-size: 1.2rem; text-align: center; box-shadow: 3px 3px 6px var(--shadow), -3px -3px 6px var(--light); cursor: pointer; }
-        .cat-item.selected { box-shadow: inset 2px 2px 5px var(--shadow); transform: scale(0.95); background: rgba(0,0,0,0.02); }
+        .cat-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 8px; margin-bottom: 15px; }
+        .cat-item { padding: 10px 5px; border-radius: 10px; font-size: 1rem; text-align: center; box-shadow: 3px 3px 6px var(--shadow), -3px -3px 6px var(--light); }
+        .cat-item.selected { box-shadow: inset 2px 2px 5px var(--shadow); color: var(--accent); }
 
-        .alarm { animation: pulse 1s infinite; color: var(--danger) !important; }
-        @keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.5; } 100% { opacity: 1; } }
+        .label-sm { font-size: 0.65rem; color: #7f8c8d; font-weight: 700; text-transform: uppercase; }
     </style>
 </head>
 <body class="pink">
@@ -57,30 +56,31 @@
     <div id="page1" class="page active">
         <div class="card" style="text-align:center">
             <div id="userNameShow" style="font-weight:900; letter-spacing:1px; margin-bottom:5px">MARY</div>
-            <div style="font-size:0.6rem; color:#7f8c8d; font-weight:800">ESTADO GENERAL DEL MES</div>
+            <div class="label-sm">Balance General Mensual</div>
             <div class="health-bar"><div id="mainHealthFill" class="health-fill"></div></div>
-            <div style="display:flex; justify-content: space-between; font-size:0.8rem; font-weight:900">
-                <span id="mainSpent">$0</span>
+            <div style="display:flex; justify-content: space-between; font-size:0.85rem; font-weight:900">
+                <span id="mainSpent" style="color:var(--danger)">$0</span>
                 <span id="mainRemain" style="color:var(--green)">$0</span>
             </div>
         </div>
 
         <div class="card">
+            <div class="label-sm" style="margin-bottom:10px; text-align:center">Selecciona Partida</div>
             <div class="cat-grid" id="catGrid"></div>
-            <input type="text" id="item" placeholder="¿Detalle del gasto?">
+            <input type="text" id="item" placeholder="¿En qué se gastó?">
             <input type="number" id="price" placeholder="Monto $" inputmode="decimal">
             <button class="neubtn" style="color:var(--green)" onclick="agregarGasto()">REGISTRAR GASTO</button>
         </div>
         
         <div style="display:flex; gap:10px; justify-content: center;">
-            <button class="neubtn" style="width:auto; padding:8px 15px; font-size:0.6rem" onclick="setMode('pink','Mary')">🌸 MARY</button>
-            <button class="neubtn" style="width:auto; padding:8px 15px; font-size:0.6rem" onclick="setMode('','Eliezer')">👔 ELIEZER</button>
+            <button class="neubtn" style="width:auto; padding:8px 15px; font-size:0.6rem" onclick="setMode('pink','Mary')">🌸 MODO MARY</button>
+            <button class="neubtn" style="width:auto; padding:8px 15px; font-size:0.6rem" onclick="setMode('','Eliezer')">👔 MODO ELIEZER</button>
         </div>
     </div>
 
     <div id="page2" class="page">
         <div class="card">
-            <div style="font-size:0.7rem; font-weight:bold; text-align:center; margin-bottom:10px">INGRESO MENSUAL TOTAL</div>
+            <div class="label-sm" style="text-align:center; margin-bottom:5px">Ingreso Mensual Familiar</div>
             <input type="number" id="ingresoMaster" placeholder="$0.00" oninput="recalcPlan()" style="font-size:1.5rem; font-weight:900; color:var(--green)">
             <div id="totalCheck" style="text-align:center; font-size:0.7rem; font-weight:800">Suma: 100% ✅</div>
         </div>
@@ -88,26 +88,29 @@
     </div>
 
     <div id="page3" class="page">
-        <div id="listaTransacciones" style="width:100%; max-width:350px; margin: 0 auto;"></div>
+        <div id="listaTransacciones" style="width:100%; max-width:380px; margin: 0 auto;"></div>
         <div class="card" style="text-align:center">
             <button class="neubtn" style="color:var(--accent)" onclick="exportarASheets()">🚀 SINCRONIZAR SHEETS</button>
-            <button onclick="limpiar()" style="margin-top:20px; border:none; background:none; color:var(--danger); font-size:0.6rem; font-weight:800; opacity:0.5">BORRAR TODO</button>
+            <button onclick="limpiar()" style="margin-top:20px; border:none; background:none; color:var(--danger); font-size:0.6rem; font-weight:800; opacity:0.4">BORRAR TODO</button>
         </div>
     </div>
 
     <script>
         const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbz8c_aLEXO6wVgb4kVOKaokrqeETvJa7RefjCD4pntVAb60APUFHuIdR8MMBbeR_brZIg/exec";
         
-        let db = JSON.parse(localStorage.getItem('fin_master_v4')) || {
-            name: "Mary", mode: "pink", ingreso: 0, gastos: [], selectedCatIndex: 3,
+        let db = JSON.parse(localStorage.getItem('fin_master_v5')) || {
+            name: "Mary", mode: "pink", ingreso: 0, gastos: [], selectedCatIndex: 0,
             rubros: [
-                { n: "Diezmos / Ofrendas", p: 10, e: "⛪", gastado: 0 },
-                { n: "Ahorro / Inversión", p: 15, e: "💰", gastado: 0 },
-                { n: "Vivienda / Serv.", p: 30, e: "🏠", gastado: 0 },
-                { n: "Alimentación", p: 15, e: "🛒", gastado: 0 },
-                { n: "Donación / Ayuda", p: 5, e: "🎁", gastado: 0 },
-                { n: "Transporte", p: 10, e: "🚗", gastado: 0 },
-                { n: "Libre / Ocio", p: 15, e: "🍿", gastado: 0 }
+                { n: "Diezmos", p: 10, e: "⛪", gastado: 0 },
+                { n: "Salud", p: 10, e: "💊", gastado: 0 },
+                { n: "Vivienda", p: 25, e: "🏠", gastado: 0 },
+                { n: "Alimentos", p: 15, e: "🛒", gastado: 0 },
+                { n: "Pers. Mary", p: 10, e: "👩", gastado: 0 },
+                { n: "Pers. Eliezer", p: 10, e: "👨", gastado: 0 },
+                { n: "Ahorro", p: 10, e: "💰", gastado: 0 },
+                { n: "Transporte", p: 5, e: "🚗", gastado: 0 },
+                { n: "Donación", p: 2, e: "🎁", gastado: 0 },
+                { n: "Ocio", p: 3, e: "🍿", gastado: 0 }
             ]
         };
 
@@ -116,14 +119,17 @@
             document.getElementById('userNameShow').innerText = db.name;
             document.getElementById('ingresoMaster').value = db.ingreso;
             generarCatGrid();
-            actualizarUI();
             recalcPlan();
+            actualizarUI();
         }
 
         function generarCatGrid() {
             const grid = document.getElementById('catGrid');
             grid.innerHTML = db.rubros.map((r, i) => `
-                <div class="cat-item ${i===db.selectedCatIndex?'selected':''}" onclick="selectCat(${i}, this)">${r.e}</div>
+                <div class="cat-item ${i===db.selectedCatIndex?'selected':''}" onclick="selectCat(${i}, this)">
+                    <div style="font-size:1.1rem">${r.e}</div>
+                    <div style="font-size:0.45rem; font-weight:800">${r.n.split(' ')[0]}</div>
+                </div>
             `).join('');
         }
 
@@ -138,17 +144,17 @@
             const container = document.getElementById('planDetalle');
             let sumaP = 0;
             
-            // Recalcular el gasto acumulado por rubro desde el historial
             db.rubros.forEach(r => r.gastado = 0);
-            db.gastos.forEach(g => {
-                if(g.catIdx !== undefined) db.rubros[g.catIdx].gastado += parseFloat(g.costo);
-            });
+            db.gastos.forEach(g => { if(g.catIdx !== undefined) db.rubros[g.catIdx].gastado += parseFloat(g.costo); });
 
             container.innerHTML = db.rubros.map((r, i) => {
                 sumaP += r.p;
                 const montoMax = (db.ingreso * r.p) / 100;
                 const disponible = montoMax - r.gastado;
                 const percUso = montoMax > 0 ? (r.gastado / montoMax) * 100 : 0;
+                let color = 'var(--green)';
+                if(percUso > 75) color = 'var(--warn)';
+                if(percUso >= 100) color = 'var(--danger)';
                 
                 return `
                     <div class="plan-row">
@@ -156,10 +162,10 @@
                             <span style="font-size:0.8rem">${r.e} <b>${r.n}</b></span>
                             <input type="number" class="plan-input-perc" value="${r.p}" oninput="cambiarPerc(${i}, this.value)">
                         </div>
-                        <div class="health-bar"><div class="health-fill" style="width:${Math.min(percUso, 100)}%; background:${percUso > 100 ? 'var(--danger)' : 'var(--accent)'}"></div></div>
-                        <div style="display:flex; justify-content:space-between; font-size:0.7rem; font-weight:700">
-                            <span>Disp: $${disponible.toFixed(2)}</span>
-                            <span style="opacity:0.5">Total: $${montoMax.toFixed(2)}</span>
+                        <div class="health-bar"><div class="health-fill" style="width:${Math.min(percUso, 100)}%; background:${color}"></div></div>
+                        <div style="display:flex; justify-content:space-between; font-size:0.65rem; font-weight:700">
+                            <span style="color:${disponible < 0 ? 'var(--danger)':'var(--text)'}">Disp: $${disponible.toFixed(2)}</span>
+                            <span style="opacity:0.4">Límite: $${montoMax.toFixed(2)}</span>
                         </div>
                     </div>
                 `;
@@ -172,27 +178,21 @@
             actualizarMainBar();
         }
 
-        function cambiarPerc(idx, val) {
-            db.rubros[idx].p = parseFloat(val) || 0;
-            recalcPlan();
-        }
+        function cambiarPerc(idx, val) { db.rubros[idx].p = parseFloat(val) || 0; recalcPlan(); }
 
         function agregarGasto() {
             const item = document.getElementById('item');
             const price = document.getElementById('price');
             if(!price.value) return;
 
-            const monto = parseFloat(price.value);
             db.gastos.unshift({
                 fecha: new Date().toLocaleDateString('es-ES'),
                 nombre: db.rubros[db.selectedCatIndex].e + " " + (item.value || db.rubros[db.selectedCatIndex].n),
-                costo: monto.toFixed(2),
+                costo: parseFloat(price.value).toFixed(2),
                 catIdx: db.selectedCatIndex
             });
 
-            save();
-            actualizarUI();
-            recalcPlan();
+            save(); actualizarUI(); recalcPlan();
             item.value = ""; price.value = "";
         }
 
@@ -200,46 +200,40 @@
             const totalGasto = db.gastos.reduce((sum, g) => sum + parseFloat(g.costo), 0);
             const remain = db.ingreso - totalGasto;
             const porc = db.ingreso > 0 ? (totalGasto / db.ingreso) * 100 : 0;
-
             document.getElementById('mainSpent').innerText = "$" + totalGasto.toFixed(2);
             document.getElementById('mainRemain').innerText = "$" + remain.toFixed(2);
-            
             const fill = document.getElementById('mainHealthFill');
             fill.style.width = Math.min(porc, 100) + "%";
-            fill.style.backgroundColor = porc > 100 ? 'var(--danger)' : (porc > 85 ? 'var(--warn)' : 'var(--green)');
-            
-            if(porc > 100) document.getElementById('mainSpent').classList.add('alarm');
-            else document.getElementById('mainSpent').classList.remove('alarm');
+            fill.style.backgroundColor = porc > 100 ? 'var(--danger)' : (porc > 80 ? 'var(--warn)' : 'var(--green)');
         }
 
         function actualizarUI() {
             const container = document.getElementById('listaTransacciones');
             container.innerHTML = db.gastos.map(g => `
-                <div class="card" style="padding:15px; margin-bottom:10px; display:flex; justify-content:space-between; align-items:center">
-                    <div style="font-size:0.8rem; font-weight:bold">${g.nombre}<div style="font-size:0.6rem; color:#7f8c8d">${g.fecha}</div></div>
+                <div class="card" style="padding:12px; margin-bottom:8px; display:flex; justify-content:space-between; align-items:center">
+                    <div>
+                        <div style="font-size:0.8rem; font-weight:bold">${g.nombre}</div>
+                        <div style="font-size:0.6rem; color:#7f8c8d">${g.fecha}</div>
+                    </div>
                     <div style="font-weight:900; color:var(--danger)">-$${g.costo}</div>
                 </div>
             `).join('');
         }
 
         function setMode(m, n) { db.mode = m; db.name = n; save(); init(); }
-        function save() { localStorage.setItem('fin_master_v4', JSON.stringify(db)); }
+        function save() { localStorage.setItem('fin_master_v5', JSON.stringify(db)); }
         function showPage(n) {
             document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
             document.querySelectorAll('nav span').forEach(s => s.classList.remove('active'));
             document.getElementById('page'+n).classList.add('active');
             document.getElementById('t'+n).classList.add('active');
         }
-        function limpiar() { if(confirm("¿Borrar todo el historial?")) { db.gastos = []; save(); init(); } }
-
+        function limpiar() { if(confirm("¿Borrar historial?")) { db.gastos = []; save(); init(); } }
         async function exportarASheets() {
             if(db.gastos.length === 0) return;
-            try {
-                await fetch(WEB_APP_URL, { method: 'POST', mode: 'no-cors', body: JSON.stringify({ gastos: db.gastos }) });
-                alert("Sincronizado con éxito");
-            } catch (e) { alert("Error de red"); }
+            try { await fetch(WEB_APP_URL, { method: 'POST', mode: 'no-cors', body: JSON.stringify({ gastos: db.gastos }) }); alert("Sincronizado"); } 
+            catch (e) { alert("Error"); }
         }
-
         init();
     </script>
 </body>
