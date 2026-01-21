@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <title>Control de Gastos</title>
+    
+    <style>
+        :root {
+            --bg: #e0e5ec;
+            --text: #2c3e50;
+            --green: #27ae60;
+            --blue: #3498db;
+            --shadow: #a3b1c6;
+            --light: #ffffff;
+        }
+
+        body { 
+            background-color: var(--bg); 
+            font-family: -apple-system, sans-serif; 
+            margin: 0; 
+            padding-bottom: env(safe-area-inset-bottom);
+        }
+        
+        nav { 
+            display: flex; justify-content: space-around; padding: 20px; 
+            background: var(--bg); position: sticky; top: 0; z-index: 100; 
+            box-shadow: 0 4px 10px var(--shadow); 
+        }
+        nav span { font-weight: 800; color: #7f8c8d; padding: 10px 15px; border-radius: 12px; }
+        nav span.active { color: var(--text); box-shadow: inset 4px 4px 8px var(--shadow), inset -4px -4px 8px var(--light); }
+
+        .page { display: none; padding: 20px; flex-direction: column; align-items: center; }
+        .page.active { display: flex; }
+
+        .total-banner {
+            width: 100%; max-width: 350px;
+            background: var(--bg); padding: 25px; border-radius: 30px;
+            box-shadow: 10px 10px 20px var(--shadow), -10px -10px 20px var(--light);
+            text-align: center; margin-bottom: 30px;
+        }
+        .total-amount { font-size: 2.8rem; font-weight: 900; color: var(--green); }
+
+        .card {
+            width: 100%; max-width: 350px;
+            background: var(--bg); padding: 25px; border-radius: 30px;
+            box-shadow: 15px 15px 30px var(--shadow), -15px -15px 30px var(--light);
+            box-sizing: border-box;
+        }
+
+        input {
+            width: 100%; padding: 18px; border-radius: 15px; border: none; margin-bottom: 20px;
+            background: var(--bg); box-shadow: inset 5px 5px 10px var(--shadow), inset -5px -5px 10px var(--light);
+            font-size: 1.1rem; outline: none; box-sizing: border-box; text-align: center;
+        }
+
+        button {
+            width: 100%; padding: 18px; border-radius: 15px; border: none;
+            background: var(--bg); font-weight: 800; text-transform: uppercase;
+            box-shadow: 6px 6px 12px var(--shadow), -6px -6px 12px var(--light);
+        }
+        
+        button:active { box-shadow: inset 3px 3px 6px var(--shadow), inset -3px -3px 6px var(--light); }
+        .btn-save { color: var(--green); margin-bottom: 20px; }
+        .btn-report { color: var(--blue); margin-top: 20px; }
+
+        .table-container { width: 100%; max-width: 500px; margin-top: 15px; }
+        table { width: 100%; border-collapse: collapse; font-size: 0.9rem; }
+        th { text-align: left; padding: 12px; color: #7f8c8d; border-bottom: 2px solid var(--shadow); }
+        td { padding: 12px; border-bottom: 1px solid rgba(0,0,0,0.05); color: var(--text); }
+
+        #toast {
+            position: fixed; top: 100px; left: 50%; transform: translateX(-50%);
+            padding: 15px 30px; border-radius: 50px; color: white; font-weight: bold;
+            display: none; z-index: 1000; text-align: center; width: 70%;
+        }
+    </style>
+</head>
+<body>
+
+    <div id="toast"></div>
+
+    <nav>
+        <span id="t1" class="active" onclick="showPage(1)">📝 ANOTAR</span>
+        <span id="t2" onclick="showPage(2)">📊 TABLA</span>
+    </nav>
+
+    <div id="page1" class="page active">
+        <div class="total-banner">
+            <div style="font-size: 0.8rem; font-weight: 800; color: #7f8c8d; letter-spacing: 1px;">TOTAL GASTADO</div>
+            <div class="total-amount" id="displayTotal">$0.00</div>
+        </div>
+
+        <div class="card">
+            <input type="text" id="item" placeholder="¿Qué compraste?">
+            <input type="number" id="price" placeholder="Precio" inputmode="decimal">
+            <button class="btn-save" onclick="agregarGasto()">Guardar Gasto</button>
+        </div>
+    </div>
+
+    <div id="page2" class="page">
+        <div class="table-container">
+            <table>
+                <thead>
+                    <tr><th>Fecha</th><th>Producto</th><th style="text-align:right">Precio</th></tr>
+                </thead>
+                <tbody id="lista"></tbody>
+            </table>
+        </div>
+        
+        <button class="btn-report" onclick="exportarADocs()">📁 Exportar a Google Docs</button>
+        
+        <button onclick="limpiar()" style="margin-top: 50px; box-shadow: none; color: #e74c3c; font-size: 0.7rem; font-weight: bold;">Borrar Datos del Móvil</button>
+    </div>
+
+    <script>
+        // TU URL DE GOOGLE SCRIPT ACTUALIZADA
+        const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbwhFC31Dn6kBfEv-R4ZMS5ZZVUSGtD8hakqKT2_79cFrRUHQyicv74oEUNm_aMd9VI/exec";
+
+        let gastos = JSON.parse(localStorage.getItem('gastos_comptas')) || [];
+
+        function showPage(n) {
+            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+            document.querySelectorAll('nav span').forEach(s => s.classList.remove('active'));
+            document.getElementById('page'+n).classList.add('active');
+            document.getElementById('t'+n).classList.add('active');
+            if(n === 2) renderTabla();
+        }
+
+        function notify(m, c) {
+            const t = document.getElementById('toast');
+            t.innerText = m; t.style.backgroundColor = c;
+            t.style.display = 'block';
+            setTimeout(() => t.style.display = 'none', 3000);
+        }
+
+        function calcularTotal() {
+            const total = gastos.reduce((sum, g) => sum + parseFloat(g.costo), 0);
+            document.getElementById('displayTotal').innerText = `$${total.toFixed(2)}`;
+            return total.toFixed(2);
+        }
+
+        function agregarGasto() {
+            const item = document.getElementById('item');
+            const price = document.getElementById('price');
+            if(!item.value || !price.value) return notify("⚠️ Escribe producto y precio", "#e67e22");
+
+            const g = {
+                fecha: new Date().toLocaleDateString('es-ES'),
+                nombre: item.value,
+                costo: parseFloat(price.value).toFixed(2)
+            };
+
+            gastos.unshift(g);
+            localStorage.setItem('gastos_comptas', JSON.stringify(gastos));
+            calcularTotal();
+            notify("✅ Guardado en el móvil", "#27ae60");
+            item.value = ""; price.value = "";
+            item.blur(); price.blur();
+        }
+
+        function renderTabla() {
+            const lista = document.getElementById('lista');
+            lista.innerHTML = gastos.map(g => `
+                <tr>
+                    <td>${g.fecha}</td>
+                    <td>${g.nombre}</td>
+                    <td style="text-align:right; font-weight:800; color:var(--green);">$${g.costo}</td>
+                </tr>
+            `).join('');
+        }
+
+        async function exportarADocs() {
+            if(gastos.length === 0) return notify("⚠️ No hay gastos para exportar", "#e67e22");
+            
+            const btn = document.querySelector('.btn-report');
+            btn.innerText = "EXPORTANDO...";
+            btn.disabled = true;
+
+            try {
+                // Enviamos el objeto completo al script de Google
+                await fetch(WEB_APP_URL, {
+                    method: 'POST',
+                    mode: 'no-cors',
+                    body: JSON.stringify({ 
+                        gastos: gastos, 
+                        total: calcularTotal() 
+                    })
+                });
+                notify("🚀 Reporte enviado a Google Docs", "#3498db");
+            } catch (e) {
+                notify("❌ Error al conectar con Google", "#e74c3c");
+            } finally {
+                btn.innerText = "📁 Exportar a Google Docs";
+                btn.disabled = false;
+            }
+        }
+
+        function limpiar() {
+            if(confirm("¿Seguro que quieres vaciar la tabla de tu móvil?")) {
+                gastos = []; localStorage.removeItem('gastos_comptas');
+                renderTabla(); calcularTotal();
+            }
+        }
+
+        // Inicializar total al cargar
+        calcularTotal();
+    </script>
+</body>
+</html>
