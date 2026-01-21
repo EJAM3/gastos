@@ -3,236 +3,214 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <title>Finance Master 360 Plus</title>
+    <title>Iglesia Conexión - Registro</title>
     <style>
         :root {
             --bg: #e0e5ec; --text: #2c3e50; --shadow: #a3b1c6; --light: #ffffff;
-            --accent: #3498db; --green: #27ae60; --danger: #e74c3c; --warn: #f1c40f;
+            --accent: #6c5ce7; --green: #27ae60; --church: #4834d4;
         }
-        body.pink {
-            --bg: #f5e6e8; --text: #5a4a4a; --shadow: #d1b8bc; --light: #ffffff;
-            --accent: #d4a5a5; --green: #81c784; --danger: #ff8a80; --warn: #ffd54f;
+        body.dark-mode {
+            --bg: #2d3436; --text: #dfe6e9; --shadow: #1e2122; --light: #3d4446;
+            --accent: #a29bfe;
         }
-        body { background-color: var(--bg); font-family: -apple-system, sans-serif; margin: 0; padding-bottom: 30px; transition: 0.5s; }
+        body { background-color: var(--bg); font-family: -apple-system, sans-serif; margin: 0; padding-bottom: 30px; transition: 0.5s; color: var(--text); }
         
         nav { display: flex; justify-content: space-around; padding: 15px; background: var(--bg); position: sticky; top: 0; z-index: 100; box-shadow: 0 4px 10px var(--shadow); }
-        nav span { font-weight: 800; color: #7f8c8d; padding: 8px 12px; border-radius: 12px; font-size: 0.65rem; }
-        nav span.active { color: var(--text); box-shadow: inset 4px 4px 8px var(--shadow), inset -4px -4px 8px var(--light); }
+        nav span { font-weight: 800; color: #7f8c8d; padding: 8px 12px; border-radius: 12px; font-size: 0.65rem; transition: 0.3s; cursor: pointer; }
+        nav span.active { color: var(--accent); box-shadow: inset 4px 4px 8px var(--shadow), inset -4px -4px 8px var(--light); }
 
         .page { display: none; padding: 20px; animation: fadeIn 0.3s; }
         .page.active { display: block; }
         @keyframes fadeIn { from {opacity:0} to {opacity:1} }
 
-        .card { width: 100%; max-width: 380px; background: var(--bg); padding: 20px; border-radius: 25px; box-shadow: 10px 10px 20px var(--shadow), -10px -10px 20px var(--light); box-sizing: border-box; margin: 0 auto 20px; }
+        .card { width: 100%; max-width: 450px; background: var(--bg); padding: 20px; border-radius: 25px; box-shadow: 10px 10px 20px var(--shadow), -10px -10px 20px var(--light); box-sizing: border-box; margin: 0 auto 20px; }
         
-        .health-bar { width: 100%; height: 8px; background: var(--bg); border-radius: 4px; margin: 8px 0; box-shadow: inset 2px 2px 4px var(--shadow), inset -2px -2px 4px var(--light); overflow: hidden; }
-        .health-fill { height: 100%; width: 0%; background: var(--green); transition: 0.6s ease; }
+        .neubtn { width: 100%; padding: 15px; border-radius: 12px; border: none; background: var(--bg); font-weight: 800; box-shadow: 5px 5px 10px var(--shadow), -5px -5px 10px var(--light); color: var(--text); cursor: pointer; margin-bottom: 15px; font-size: 0.9rem; }
+        .neubtn:active { box-shadow: inset 3px 3px 6px var(--shadow), inset -3px -3px 6px var(--light); transform: scale(0.98); }
 
-        .neubtn { width: 100%; padding: 15px; border-radius: 12px; border: none; background: var(--bg); font-weight: 800; box-shadow: 5px 5px 10px var(--shadow), -5px -5px 10px var(--light); color: var(--text); }
-        .neubtn:active { box-shadow: inset 3px 3px 6px var(--shadow), inset -3px -3px 6px var(--light); }
+        input, select { width: 100%; padding: 12px; border-radius: 12px; border: none; margin-bottom: 12px; background: var(--bg); box-shadow: inset 4px 4px 8px var(--shadow), inset -4px -4px 8px var(--light); font-size: 0.9rem; outline: none; color: var(--text); box-sizing: border-box; }
 
-        input { width: 100%; padding: 12px; border-radius: 12px; border: none; margin-bottom: 10px; background: var(--bg); box-shadow: inset 4px 4px 8px var(--shadow), inset -4px -4px 8px var(--light); font-size: 1rem; outline: none; text-align: center; color: var(--text); box-sizing: border-box; }
+        .cat-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; margin-bottom: 20px; }
+        .cat-item { padding: 15px 5px; border-radius: 15px; font-size: 0.8rem; text-align: center; box-shadow: 4px 4px 8px var(--shadow), -4px -4px 8px var(--light); cursor: pointer; transition: 0.2s; }
+        .cat-item.selected { box-shadow: inset 2px 2px 5px var(--shadow); color: var(--accent); font-weight: bold; }
 
-        .plan-row { padding: 10px 0; border-bottom: 1px solid rgba(0,0,0,0.03); }
-        .plan-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px; }
-        .plan-input-perc { width: 42px !important; margin: 0 !important; padding: 2px !important; font-size: 0.7rem !important; font-weight: bold; }
-        
-        .cat-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 8px; margin-bottom: 15px; }
-        .cat-item { padding: 10px 5px; border-radius: 10px; font-size: 1rem; text-align: center; box-shadow: 3px 3px 6px var(--shadow), -3px -3px 6px var(--light); }
-        .cat-item.selected { box-shadow: inset 2px 2px 5px var(--shadow); color: var(--accent); }
-
-        .label-sm { font-size: 0.65rem; color: #7f8c8d; font-weight: 700; text-transform: uppercase; }
+        .label-sm { font-size: 0.65rem; color: #7f8c8d; font-weight: 700; text-transform: uppercase; margin-bottom: 8px; display: block; margin-top: 10px; }
+        .row { display: flex; gap: 10px; }
+        hr { border: none; height: 2px; background: var(--shadow); opacity: 0.3; margin: 20px 0; }
     </style>
 </head>
-<body class="pink">
+<body>
 
     <nav>
-        <span id="t1" class="active" onclick="showPage(1)">📝 REGISTRO</span>
-        <span id="t2" onclick="showPage(2)">📋 PLAN</span>
-        <span id="t3" onclick="showPage(3)">📊 HISTORIAL</span>
+        <span id="t1" class="active" onclick="showPage(1)">➕ NUEVO</span>
+        <span id="t2" onclick="showPage(2)">👥 LISTADO</span>
+        <span id="t3" onclick="showPage(3)">⚙️ AJUSTES</span>
     </nav>
 
     <div id="page1" class="page active">
         <div class="card" style="text-align:center">
-            <div id="userNameShow" style="font-weight:900; letter-spacing:1px; margin-bottom:5px">MARY</div>
-            <div class="label-sm">Balance General Mensual</div>
-            <div class="health-bar"><div id="mainHealthFill" class="health-fill"></div></div>
-            <div style="display:flex; justify-content: space-between; font-size:0.85rem; font-weight:900">
-                <span id="mainSpent" style="color:var(--danger)">$0</span>
-                <span id="mainRemain" style="color:var(--green)">$0</span>
-            </div>
+            <div class="label-sm">Registros por Sincronizar</div>
+            <div style="font-size: 1.8rem; font-weight: 900; color: var(--church);" id="countLocal">0</div>
         </div>
 
         <div class="card">
-            <div class="label-sm" style="margin-bottom:10px; text-align:center">Selecciona Partida</div>
+            <span class="label-sm">Estado del Creyente</span>
             <div class="cat-grid" id="catGrid"></div>
-            <input type="text" id="item" placeholder="¿En qué se gastó?">
-            <input type="number" id="price" placeholder="Monto $" inputmode="decimal">
-            <button class="neubtn" style="color:var(--green)" onclick="agregarGasto()">REGISTRAR GASTO</button>
-        </div>
-        
-        <div style="display:flex; gap:10px; justify-content: center;">
-            <button class="neubtn" style="width:auto; padding:8px 15px; font-size:0.6rem" onclick="setMode('pink','Mary')">🌸 MODO MARY</button>
-            <button class="neubtn" style="width:auto; padding:8px 15px; font-size:0.6rem" onclick="setMode('','Eliezer')">👔 MODO ELIEZER</button>
+            
+            <span class="label-sm">Datos Personales</span>
+            <input type="text" id="nombre" placeholder="Nombre Completo">
+            <input type="tel" id="telefono" placeholder="WhatsApp / Teléfono">
+            <input type="text" id="direccion" placeholder="Dirección">
+            
+            <div class="row">
+                <div style="flex:2">
+                    <span class="label-sm">F. Nacimiento (Opcional)</span>
+                    <input type="date" id="fechaNac" onchange="calcularEdad(this.value)">
+                </div>
+                <div style="flex:1">
+                    <span class="label-sm">Edad</span>
+                    <input type="number" id="edad" placeholder="0">
+                </div>
+            </div>
+
+            <div class="row">
+                <div style="flex:1">
+                    <span class="label-sm">Género</span>
+                    <select id="genero">
+                        <option value="">Género...</option>
+                        <option value="Masculino">Masc</option>
+                        <option value="Femenino">Fem</option>
+                    </select>
+                </div>
+                <div style="flex:1">
+                    <span class="label-sm">Estado Civil</span>
+                    <select id="estadoCivil">
+                        <option value="">Estado Civil...</option>
+                        <option value="Soltero/a">Soltero/a</option>
+                        <option value="Casado/a">Casado/a</option>
+                        <option value="U. Libre">U. Libre</option>
+                    </select>
+                </div>
+            </div>
+
+            <input type="text" id="peticion" placeholder="Petición o Notas">
+            
+            <button class="neubtn" style="color:var(--church); margin-top:10px" onclick="registrarCreyente()">💾 GUARDAR LOCALMENTE</button>
+            <hr>
+            <button id="btnSincro" class="neubtn" style="color:var(--green)" onclick="exportarASheets()">🚀 SUBIR A GOOGLE SHEETS</button>
         </div>
     </div>
 
     <div id="page2" class="page">
-        <div class="card">
-            <div class="label-sm" style="text-align:center; margin-bottom:5px">Ingreso Mensual Familiar</div>
-            <input type="number" id="ingresoMaster" placeholder="$0.00" oninput="recalcPlan()" style="font-size:1.5rem; font-weight:900; color:var(--green)">
-            <div id="totalCheck" style="text-align:center; font-size:0.7rem; font-weight:800">Suma: 100% ✅</div>
-        </div>
-        <div class="card" id="planDetalle"></div>
+        <div id="listaPersonas" style="width:100%; max-width:450px; margin: 0 auto;"></div>
     </div>
 
     <div id="page3" class="page">
-        <div id="listaTransacciones" style="width:100%; max-width:380px; margin: 0 auto;"></div>
         <div class="card" style="text-align:center">
-            <button class="neubtn" style="color:var(--accent)" onclick="exportarASheets()">🚀 SINCRONIZAR SHEETS</button>
-            <button onclick="limpiar()" style="margin-top:20px; border:none; background:none; color:var(--danger); font-size:0.6rem; font-weight:800; opacity:0.4">BORRAR TODO</button>
+            <button class="neubtn" onclick="toggleTheme()">🌓 CAMBIAR TEMA</button>
+            <button onclick="limpiarDatos()" style="margin-top:20px; border:none; background:none; color:#e74c3c; font-size:0.7rem; font-weight:800; cursor:pointer">BORRAR TODO EL HISTORIAL LOCAL</button>
         </div>
     </div>
 
     <script>
-        const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbz8c_aLEXO6wVgb4kVOKaokrqeETvJa7RefjCD4pntVAb60APUFHuIdR8MMBbeR_brZIg/exec";
+        const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbzPML9poWuxo_kNPwdrWAGuaLeF1zT4DptRF-R_jF2JkW1pMYPrTDJcPROekO6zz7Sf/exec";
         
-        let db = JSON.parse(localStorage.getItem('fin_master_v5')) || {
-            name: "Mary", mode: "pink", ingreso: 0, gastos: [], selectedCatIndex: 0,
-            rubros: [
-                { n: "Diezmos", p: 10, e: "⛪", gastado: 0 },
-                { n: "Salud", p: 10, e: "💊", gastado: 0 },
-                { n: "Vivienda", p: 25, e: "🏠", gastado: 0 },
-                { n: "Alimentos", p: 15, e: "🛒", gastado: 0 },
-                { n: "Pers. Mary", p: 10, e: "👩", gastado: 0 },
-                { n: "Pers. Eliezer", p: 10, e: "👨", gastado: 0 },
-                { n: "Ahorro", p: 10, e: "💰", gastado: 0 },
-                { n: "Transporte", p: 5, e: "🚗", gastado: 0 },
-                { n: "Donación", p: 2, e: "🎁", gastado: 0 },
-                { n: "Ocio", p: 3, e: "🍿", gastado: 0 }
+        let db = JSON.parse(localStorage.getItem('iglesia_db_v6')) || {
+            creyentes: [],
+            selectedCatIndex: 0,
+            estados: [
+                { n: "Conversión", e: "❤️" },
+                { n: "Reconciliación", e: "⚓" }
             ]
         };
 
         function init() {
-            document.body.className = db.mode;
-            document.getElementById('userNameShow').innerText = db.name;
-            document.getElementById('ingresoMaster').value = db.ingreso;
             generarCatGrid();
-            recalcPlan();
             actualizarUI();
+            document.getElementById('countLocal').innerText = db.creyentes.length;
         }
 
         function generarCatGrid() {
-            const grid = document.getElementById('catGrid');
-            grid.innerHTML = db.rubros.map((r, i) => `
-                <div class="cat-item ${i===db.selectedCatIndex?'selected':''}" onclick="selectCat(${i}, this)">
-                    <div style="font-size:1.1rem">${r.e}</div>
-                    <div style="font-size:0.45rem; font-weight:800">${r.n.split(' ')[0]}</div>
+            document.getElementById('catGrid').innerHTML = db.estados.map((est, i) => `
+                <div class="cat-item ${i === db.selectedCatIndex ? 'selected' : ''}" onclick="db.selectedCatIndex=${i}; save(); generarCatGrid();">
+                    <div style="font-size:1.8rem">${est.e}</div>
+                    <div style="margin-top:5px; font-weight:800">${est.n}</div>
                 </div>
             `).join('');
         }
 
-        function selectCat(idx, el) { 
-            db.selectedCatIndex = idx; 
-            document.querySelectorAll('.cat-item').forEach(i => i.classList.remove('selected'));
-            el.classList.add('selected');
+        function calcularEdad(fecha) {
+            if(!fecha) return;
+            let hoy = new Date();
+            let cumple = new Date(fecha);
+            let edad = hoy.getFullYear() - cumple.getFullYear();
+            if (hoy.getMonth() < cumple.getMonth() || (hoy.getMonth() == cumple.getMonth() && hoy.getDate() < cumple.getDate())) edad--;
+            document.getElementById('edad').value = edad;
         }
 
-        function recalcPlan() {
-            db.ingreso = parseFloat(document.getElementById('ingresoMaster').value) || 0;
-            const container = document.getElementById('planDetalle');
-            let sumaP = 0;
-            
-            db.rubros.forEach(r => r.gastado = 0);
-            db.gastos.forEach(g => { if(g.catIdx !== undefined) db.rubros[g.catIdx].gastado += parseFloat(g.costo); });
+        function registrarCreyente() {
+            const campos = ['nombre', 'telefono', 'direccion', 'fechaNac', 'edad', 'genero', 'estadoCivil', 'peticion'];
+            const data = {};
+            campos.forEach(c => data[c] = document.getElementById(c).value);
 
-            container.innerHTML = db.rubros.map((r, i) => {
-                sumaP += r.p;
-                const montoMax = (db.ingreso * r.p) / 100;
-                const disponible = montoMax - r.gastado;
-                const percUso = montoMax > 0 ? (r.gastado / montoMax) * 100 : 0;
-                let color = 'var(--green)';
-                if(percUso > 75) color = 'var(--warn)';
-                if(percUso >= 100) color = 'var(--danger)';
-                
-                return `
-                    <div class="plan-row">
-                        <div class="plan-header">
-                            <span style="font-size:0.8rem">${r.e} <b>${r.n}</b></span>
-                            <input type="number" class="plan-input-perc" value="${r.p}" oninput="cambiarPerc(${i}, this.value)">
-                        </div>
-                        <div class="health-bar"><div class="health-fill" style="width:${Math.min(percUso, 100)}%; background:${color}"></div></div>
-                        <div style="display:flex; justify-content:space-between; font-size:0.65rem; font-weight:700">
-                            <span style="color:${disponible < 0 ? 'var(--danger)':'var(--text)'}">Disp: $${disponible.toFixed(2)}</span>
-                            <span style="opacity:0.4">Límite: $${montoMax.toFixed(2)}</span>
-                        </div>
-                    </div>
-                `;
-            }).join('');
+            if(!data.nombre) return alert("Ingresa el nombre.");
 
-            const check = document.getElementById('totalCheck');
-            check.innerText = `Suma: ${sumaP}% ${sumaP === 100 ? '✅' : '❌'}`;
-            check.style.color = sumaP === 100 ? 'var(--green)' : 'var(--danger)';
-            save();
-            actualizarMainBar();
-        }
-
-        function cambiarPerc(idx, val) { db.rubros[idx].p = parseFloat(val) || 0; recalcPlan(); }
-
-        function agregarGasto() {
-            const item = document.getElementById('item');
-            const price = document.getElementById('price');
-            if(!price.value) return;
-
-            db.gastos.unshift({
-                fecha: new Date().toLocaleDateString('es-ES'),
-                nombre: db.rubros[db.selectedCatIndex].e + " " + (item.value || db.rubros[db.selectedCatIndex].n),
-                costo: parseFloat(price.value).toFixed(2),
-                catIdx: db.selectedCatIndex
+            db.creyentes.unshift({
+                fechaRegistro: new Date().toLocaleString(),
+                ...data,
+                estado: db.estados[db.selectedCatIndex].n,
+                icono: db.estados[db.selectedCatIndex].e
             });
 
-            save(); actualizarUI(); recalcPlan();
-            item.value = ""; price.value = "";
-        }
-
-        function actualizarMainBar() {
-            const totalGasto = db.gastos.reduce((sum, g) => sum + parseFloat(g.costo), 0);
-            const remain = db.ingreso - totalGasto;
-            const porc = db.ingreso > 0 ? (totalGasto / db.ingreso) * 100 : 0;
-            document.getElementById('mainSpent').innerText = "$" + totalGasto.toFixed(2);
-            document.getElementById('mainRemain').innerText = "$" + remain.toFixed(2);
-            const fill = document.getElementById('mainHealthFill');
-            fill.style.width = Math.min(porc, 100) + "%";
-            fill.style.backgroundColor = porc > 100 ? 'var(--danger)' : (porc > 80 ? 'var(--warn)' : 'var(--green)');
+            save();
+            init();
+            campos.forEach(c => document.getElementById(c).value = "");
+            alert("Guardado localmente");
         }
 
         function actualizarUI() {
-            const container = document.getElementById('listaTransacciones');
-            container.innerHTML = db.gastos.map(g => `
-                <div class="card" style="padding:12px; margin-bottom:8px; display:flex; justify-content:space-between; align-items:center">
-                    <div>
-                        <div style="font-size:0.8rem; font-weight:bold">${g.nombre}</div>
-                        <div style="font-size:0.6rem; color:#7f8c8d">${g.fecha}</div>
+            const container = document.getElementById('listaPersonas');
+            container.innerHTML = db.creyentes.length === 0 ? '<p style="text-align:center; color:#7f8c8d; margin-top:50px">No hay registros locales.</p>' : 
+                db.creyentes.map(p => `
+                <div class="card" style="padding:15px; margin-bottom:10px">
+                    <div style="display:flex; gap:12px; align-items:center">
+                        <span style="font-size:1.5rem">${p.icono}</span>
+                        <div>
+                            <div style="font-weight:900">${p.nombre}</div>
+                            <div style="font-size:0.75rem; color:var(--church)">${p.estado} • ${p.telefono}</div>
+                        </div>
                     </div>
-                    <div style="font-weight:900; color:var(--danger)">-$${g.costo}</div>
-                </div>
-            `).join('');
+                </div>`).join('');
         }
 
-        function setMode(m, n) { db.mode = m; db.name = n; save(); init(); }
-        function save() { localStorage.setItem('fin_master_v5', JSON.stringify(db)); }
         function showPage(n) {
-            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-            document.querySelectorAll('nav span').forEach(s => s.classList.remove('active'));
+            document.querySelectorAll('.page, nav span').forEach(el => el.classList.remove('active'));
             document.getElementById('page'+n).classList.add('active');
             document.getElementById('t'+n).classList.add('active');
         }
-        function limpiar() { if(confirm("¿Borrar historial?")) { db.gastos = []; save(); init(); } }
+
+        function toggleTheme() { document.body.classList.toggle('dark-mode'); }
+        function save() { localStorage.setItem('iglesia_db_v6', JSON.stringify(db)); }
+        function limpiarDatos() { if(confirm("¿Borrar todo?")) { db.creyentes = []; save(); init(); } }
+
         async function exportarASheets() {
-            if(db.gastos.length === 0) return;
-            try { await fetch(WEB_APP_URL, { method: 'POST', mode: 'no-cors', body: JSON.stringify({ gastos: db.gastos }) }); alert("Sincronizado"); } 
-            catch (e) { alert("Error"); }
+            if(db.creyentes.length === 0) return alert("No hay datos.");
+            const btn = document.getElementById('btnSincro');
+            btn.innerText = "⏳ SUBIENDO...";
+            btn.disabled = true;
+            try {
+                await fetch(WEB_APP_URL, {
+                    method: 'POST',
+                    mode: 'no-cors',
+                    body: JSON.stringify({creyente: db.creyentes[0]})
+                });
+                alert("¡Sincronizado!");
+            } catch (e) {
+                alert("Error al subir.");
+            } finally {
+                btn.innerText = "🚀 SUBIR A GOOGLE SHEETS";
+                btn.disabled = false;
+            }
         }
         init();
     </script>
