@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <meta name="apple-mobile-web-app-capable" content="yes">
-    <title>Mis Gastos v6</title>
+    <title>Comptas App</title>
     <style>
         :root { --bg: #e0e5ec; --text: #2c3e50; --green: #27ae60; --blue: #3498db; --shadow: #a3b1c6; --light: #ffffff; }
         body { background-color: var(--bg); font-family: -apple-system, sans-serif; margin: 0; padding-bottom: 40px; }
@@ -16,8 +16,8 @@
         .total-banner { width: 100%; max-width: 350px; background: var(--bg); padding: 25px; border-radius: 30px; box-shadow: 10px 10px 20px var(--shadow), -10px -10px 20px var(--light); text-align: center; margin-bottom: 25px; }
         .total-amount { font-size: 2.8rem; font-weight: 900; color: var(--green); }
         .card { width: 100%; max-width: 350px; background: var(--bg); padding: 25px; border-radius: 30px; box-shadow: 15px 15px 30px var(--shadow), -15px -15px 30px var(--light); box-sizing: border-box; }
-        input { width: 100%; padding: 18px; border-radius: 15px; border: none; margin-bottom: 20px; background: var(--bg); box-shadow: inset 5px 5px 10px var(--shadow), inset -5px -5px 10px var(--light); font-size: 1.1rem; outline: none; text-align: center; }
-        button { width: 100%; padding: 18px; border-radius: 15px; border: none; background: var(--bg); font-weight: 800; text-transform: uppercase; box-shadow: 6px 6px 12px var(--shadow), -6px -6px 12px var(--light); }
+        input { width: 100%; padding: 18px; border-radius: 15px; border: none; margin-bottom: 20px; background: var(--bg); box-shadow: inset 5px 5px 10px var(--shadow), inset -5px -5px 10px var(--light); font-size: 1.1rem; outline: none; text-align: center; color: var(--text); }
+        button { width: 100%; padding: 18px; border-radius: 15px; border: none; background: var(--bg); font-weight: 800; text-transform: uppercase; box-shadow: 6px 6px 12px var(--shadow), -6px -6px 12px var(--light); cursor: pointer; }
         .btn-save { color: var(--green); }
         .btn-report { color: var(--blue); margin-top: 30px; }
         .table-container { width: 100%; max-width: 500px; margin-top: 15px; background: var(--bg); border-radius: 20px; box-shadow: 5px 5px 15px var(--shadow); overflow: hidden; }
@@ -31,19 +31,19 @@
 <body>
     <div id="toast"></div>
     <nav>
-        <span id="t1" class="active" onclick="showPage(1)">📝 ANOTAR</span>
+        <span id="t1" class="active" onclick="showPage(1)">📝 NUEVO</span>
         <span id="t2" onclick="showPage(2)">📊 TABLA</span>
     </nav>
 
     <div id="page1" class="page active">
         <div class="total-banner">
-            <div style="font-size: 0.8rem; font-weight: 800; color: #7f8c8d;">SUMA ACUMULADA</div>
+            <div style="font-size: 0.8rem; font-weight: 800; color: #7f8c8d;">TOTAL ACUMULADO</div>
             <div class="total-amount" id="displayTotal">$0.00</div>
         </div>
         <div class="card">
-            <input type="text" id="item" placeholder="Producto">
+            <input type="text" id="item" placeholder="¿Qué compraste?">
             <input type="number" id="price" placeholder="Precio ($)" inputmode="decimal">
-            <button class="btn-save" onclick="agregarGasto()">Guardar</button>
+            <button class="btn-save" onclick="agregarGasto()">Guardar Gasto</button>
         </div>
     </div>
 
@@ -54,21 +54,20 @@
                 <tbody id="lista"></tbody>
                 <tfoot>
                     <tr class="fila-total">
-                        <td colspan="2">TOTAL TABLA</td>
+                        <td colspan="2">SUMA EN TABLA</td>
                         <td id="totalTabla" style="text-align:right">$0.00</td>
                     </tr>
                 </tfoot>
             </table>
         </div>
-        <button class="btn-report" onclick="exportarADocs()">📁 Enviar a Google Docs</button>
-        <button onclick="limpiar()" style="margin-top: 50px; box-shadow: none; color: #e74c3c; font-size: 0.7rem; font-weight: bold;">VACIAR MÓVIL</button>
+        <button class="btn-report" onclick="exportarADocs()">📁 Exportar a Google Docs</button>
+        <button onclick="limpiar()" style="margin-top: 40px; background:none; box-shadow:none; color: #e74c3c; font-size: 0.7rem; font-weight:bold;">BORRAR HISTORIAL MÓVIL</button>
     </div>
 
     <script>
-        // TU NUEVO ID DE IMPLEMENTACIÓN ACTUALIZADO
-        const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbxebS3XfX0DaEsTdADwhQh9oRylnKT1FqmuA6e7lUNAsPcZPXm5q11pHj3akLRFQY5p/exec";
+        const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbxNw0r6j7ATDNgV95YS8dsfKhu0DW0OY2vkntdqc6U9295yPiTyywjTtWP8xiMJgf1A/exec";
         
-        let gastos = JSON.parse(localStorage.getItem('gastos_v6')) || [];
+        let gastos = JSON.parse(localStorage.getItem('gastos_final_v1')) || [];
 
         function showPage(n) {
             document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
@@ -98,12 +97,18 @@
             const price = document.getElementById('price');
             if(!item.value || !price.value) return notify("⚠️ Datos incompletos", "#e67e22");
 
-            const g = { fecha: new Date().toLocaleDateString('es-ES'), nombre: item.value, costo: parseFloat(price.value).toFixed(2) };
+            const g = { 
+                fecha: new Date().toLocaleDateString('es-ES'), 
+                nombre: item.value, 
+                costo: parseFloat(price.value).toFixed(2) 
+            };
+            
             gastos.unshift(g);
-            localStorage.setItem('gastos_v6', JSON.stringify(gastos));
+            localStorage.setItem('gastos_final_v1', JSON.stringify(gastos));
             calcularTotal();
-            notify("✅ Registrado localmente", "#27ae60");
+            notify("✅ Guardado en el móvil", "#27ae60");
             item.value = ""; price.value = "";
+            item.blur(); price.blur();
         }
 
         function renderTabla() {
@@ -115,30 +120,36 @@
         async function exportarADocs() {
             if(gastos.length === 0) return notify("⚠️ No hay datos", "#e67e22");
             const btn = document.querySelector('.btn-report');
-            btn.innerText = "PROCESANDO..."; btn.disabled = true;
+            btn.innerText = "ENVIANDO..."; btn.disabled = true;
 
             try {
-                // Forzamos el envío en formato texto plano para evitar bloqueos CORS de Safari
+                // Usamos una petición más simple para evitar bloqueos de Safari
                 await fetch(WEB_APP_URL, {
                     method: 'POST',
                     mode: 'no-cors',
-                    cache: 'no-cache',
-                    headers: { 'Content-Type': 'text/plain' },
-                    body: JSON.stringify({ gastos: gastos, total: calcularTotal() })
+                    body: JSON.stringify({ 
+                        gastos: gastos, 
+                        total: calcularTotal() 
+                    })
                 });
-                notify("🚀 Reporte enviado con éxito", "#3498db");
+                
+                // Como usamos no-cors, asumimos éxito si no hay error de red
+                notify("🚀 Reporte enviado a Google Docs", "#3498db");
             } catch (e) {
-                notify("❌ Error de envío", "#e74c3c");
+                notify("❌ Error de conexión", "#e74c3c");
             } finally {
-                btn.innerText = "📁 Enviar a Google Docs"; btn.disabled = false;
+                btn.innerText = "📁 Exportar a Google Docs"; btn.disabled = false;
             }
         }
 
         function limpiar() { 
-            if(confirm("¿Borrar todo el historial del iPhone?")) { 
-                gastos = []; localStorage.removeItem('gastos_v6'); renderTabla(); 
+            if(confirm("¿Deseas borrar todo el historial local?")) { 
+                gastos = []; 
+                localStorage.removeItem('gastos_final_v1'); 
+                renderTabla(); 
             } 
         }
+
         calcularTotal();
     </script>
 </body>
