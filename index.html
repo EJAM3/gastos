@@ -4,102 +4,112 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <title>Finance Elite</title>
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <title>Finance Elite Neumorph</title>
     <style>
         :root {
-            /* Modo Eliezer (Hombre - Suave) */
-            --bg: #f0f4f8;
-            --accent: #546e7a;
-            --text: #263238;
-            --card-bg: #ffffff;
-            --shadow: rgba(84, 110, 122, 0.15);
-            --danger: #e57373;
-            --success: #81c784;
+            /* Modo Eliezer (Por defecto) */
+            --bg: #e0e5ec;
+            --text: #2c3e50;
+            --shadow: #a3b1c6;
+            --light: #ffffff;
+            --accent: #3498db;
+            --green: #27ae60;
+            --danger: #e74c3c;
         }
 
-        /* Modo Mary (Dama) */
         body.pink {
-            --bg: #fffafa;
+            /* Modo Mary */
+            --bg: #f5e6e8;
+            --text: #5a4a4a;
+            --shadow: #d1b8bc;
+            --light: #ffffff;
             --accent: #d4a5a5;
-            --text: #4a4a4a;
-            --card-bg: #ffffff;
-            --shadow: rgba(212, 165, 165, 0.25);
+            --green: #81c784;
         }
 
         body { 
             background-color: var(--bg); 
-            font-family: '-apple-system', sans-serif; 
-            margin: 0; color: var(--text); 
-            transition: all 0.5s ease;
-            padding-bottom: 60px;
+            font-family: -apple-system, sans-serif; 
+            margin: 0; padding-bottom: 40px;
+            transition: background 0.5s ease;
+        }
+        
+        nav { 
+            display: flex; justify-content: space-around; padding: 20px; 
+            background: var(--bg); position: sticky; top: 0; z-index: 100; 
+            box-shadow: 0 4px 10px var(--shadow); 
+        }
+        nav span { font-weight: 800; color: #7f8c8d; padding: 10px 15px; border-radius: 12px; }
+        nav span.active { color: var(--text); box-shadow: inset 4px 4px 8px var(--shadow), inset -4px -4px 8px var(--light); }
+
+        .page { display: none; padding: 20px; flex-direction: column; align-items: center; }
+        .page.active { display: flex; }
+
+        .header-box {
+            width: 100%; max-width: 350px; text-align: center; margin-bottom: 20px;
         }
 
-        header {
-            padding: 60px 25px 40px;
-            background: var(--card-bg);
-            border-bottom-left-radius: 40px;
-            border-bottom-right-radius: 40px;
-            box-shadow: 0 10px 30px var(--shadow);
-            text-align: center;
+        .user-name { 
+            font-size: 1.2rem; font-weight: 800; color: var(--text); margin-bottom: 10px; 
+            text-transform: uppercase; letter-spacing: 1px;
         }
 
-        .user-info { display: flex; flex-direction: column; align-items: center; gap: 5px; }
-        .user-name { font-size: 1.5rem; font-weight: 800; color: var(--accent); margin: 0; }
-
-        .mode-selector {
-            margin-top: 15px; display: flex; gap: 10px;
-        }
-
+        .mode-selector { display: flex; gap: 10px; justify-content: center; margin-bottom: 20px; }
         .btn-mode {
-            border: none; padding: 8px 15px; border-radius: 20px; font-size: 0.7rem; font-weight: bold;
-            background: var(--bg); color: var(--accent); box-shadow: 3px 3px 6px var(--shadow);
+            border: none; padding: 8px 12px; border-radius: 10px; font-size: 0.6rem; font-weight: bold;
+            background: var(--bg); color: var(--text); 
+            box-shadow: 4px 4px 8px var(--shadow), -4px -4px 8px var(--light);
+        }
+        .btn-mode:active { box-shadow: inset 2px 2px 5px var(--shadow); }
+
+        .total-banner {
+            width: 100%; max-width: 350px;
+            background: var(--bg); padding: 25px; border-radius: 30px;
+            box-shadow: 10px 10px 20px var(--shadow), -10px -10px 20px var(--light);
+            text-align: center; margin-bottom: 30px;
+        }
+        .total-label { font-size: 0.7rem; font-weight: 800; color: #7f8c8d; letter-spacing: 1px; margin-bottom: 5px; }
+        .total-amount { font-size: 2.5rem; font-weight: 900; color: var(--green); transition: 0.3s; }
+
+        .card {
+            width: 100%; max-width: 350px;
+            background: var(--bg); padding: 25px; border-radius: 30px;
+            box-shadow: 15px 15px 30px var(--shadow), -15px -15px 30px var(--light);
+            box-sizing: border-box;
         }
 
-        .budget-card {
-            background: var(--accent); color: white; padding: 25px; border-radius: 30px;
-            margin: -30px 20px 20px; box-shadow: 0 15px 35px var(--shadow);
+        input {
+            width: 100%; padding: 18px; border-radius: 15px; border: none; margin-bottom: 20px;
+            background: var(--bg); box-shadow: inset 5px 5px 10px var(--shadow), inset -5px -5px 10px var(--light);
+            font-size: 1.1rem; outline: none; box-sizing: border-box; text-align: center; color: var(--text);
         }
 
-        .budget-progress {
-            width: 100%; height: 6px; background: rgba(255,255,255,0.2); border-radius: 3px; margin-top: 15px;
-        }
-
-        .progress-bar { height: 100%; width: 0%; background: var(--success); border-radius: 3px; transition: 0.8s ease-in-out; }
-
-        .alarm-active { animation: pulse-red 1.5s infinite; }
-        @keyframes pulse-red { 0% { opacity: 1; } 50% { opacity: 0.7; background: #ff5252; } 100% { opacity: 1; } }
-
-        nav { display: flex; justify-content: center; gap: 15px; margin: 25px 0; }
-        nav span { padding: 12px 25px; border-radius: 20px; font-weight: 700; font-size: 0.85rem; color: #90a4ae; transition: 0.3s; }
-        nav span.active { background: var(--card-bg); color: var(--accent); box-shadow: 0 5px 15px var(--shadow); }
-
-        .page { display: none; padding: 0 20px; animation: slideUp 0.4s ease-out; }
-        .page.active { display: block; }
-        @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
-
-        .input-group { background: var(--card-bg); padding: 30px; border-radius: 30px; box-shadow: 0 10px 30px var(--shadow); }
-        input { 
-            width: 100%; padding: 16px; border: 1px solid rgba(0,0,0,0.05); border-radius: 15px;
-            margin-bottom: 15px; font-size: 1rem; box-sizing: border-box; outline: none; background: var(--bg);
-        }
-
-        .main-btn {
+        button.neubtn {
             width: 100%; padding: 18px; border-radius: 15px; border: none;
-            background: var(--accent); color: white; font-weight: 800; font-size: 0.9rem;
-            box-shadow: 0 8px 20px var(--shadow); letter-spacing: 1px;
+            background: var(--bg); font-weight: 800; text-transform: uppercase;
+            box-shadow: 6px 6px 12px var(--shadow), -6px -6px 12px var(--light);
+            color: var(--text); transition: 0.2s;
         }
+        button.neubtn:active { box-shadow: inset 3px 3px 6px var(--shadow), inset -3px -3px 6px var(--light); transform: scale(0.98); }
+        
+        .btn-save { color: var(--green) !important; margin-bottom: 10px; }
+        .btn-report { color: var(--accent) !important; margin-top: 20px; }
 
         .transaction-item {
-            background: var(--card-bg); padding: 18px 22px; border-radius: 22px;
-            margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center;
-            box-shadow: 0 4px 12px var(--shadow);
+            width: 100%; max-width: 350px; background: var(--bg); padding: 15px 20px; 
+            border-radius: 20px; margin-bottom: 15px; display: flex; justify-content: space-between; align-items: center;
+            box-shadow: 6px 6px 12px var(--shadow), -6px -6px 12px var(--light);
         }
 
+        /* Alarma */
+        .alarm-on { color: var(--danger) !important; animation: blink 1s infinite; }
+        @keyframes blink { 0% { opacity: 1; } 50% { opacity: 0.5; } 100% { opacity: 1; } }
+
         #toast {
-            position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%);
-            padding: 12px 25px; border-radius: 20px; color: white; font-weight: bold;
-            display: none; z-index: 1000; font-size: 0.8rem;
+            position: fixed; top: 100px; left: 50%; transform: translateX(-50%);
+            padding: 15px 30px; border-radius: 50px; color: white; font-weight: bold;
+            display: none; z-index: 1000; text-align: center; width: 70%;
         }
     </style>
 </head>
@@ -107,55 +117,48 @@
 
     <div id="toast"></div>
 
-    <header>
-        <div class="user-info">
-            <p style="margin:0; font-size: 0.7rem; letter-spacing: 2px; opacity: 0.6;">BIENVENIDO</p>
-            <h2 class="user-name" id="userName">Mary</h2>
+    <nav>
+        <span id="t1" class="active" onclick="showPage(1)">📝 ANOTAR</span>
+        <span id="t2" onclick="showPage(2)">📊 TABLA</span>
+    </nav>
+
+    <div id="page1" class="page active">
+        <div class="header-box">
+            <div class="user-name" id="userName">Mary</div>
             <div class="mode-selector">
                 <button class="btn-mode" onclick="setMode('pink', 'Mary')">🌸 MODO MARY</button>
                 <button class="btn-mode" onclick="setMode('', 'Eliezer')">👔 MODO ELIEZER</button>
             </div>
         </div>
-        <div style="margin-top: 25px; font-size: 0.7rem; color: #90a4ae; font-weight: 700;">PRESUPUESTO MENSUAL</div>
-        <h1 id="totalIngresos" onclick="setBudget()" style="margin: 5px 0 0; font-size: 2.2rem; font-weight: 900;">$0.00</h1>
-    </header>
 
-    <div class="budget-card" id="mainCard">
-        <div style="display: flex; justify-content: space-between; align-items: flex-end;">
-            <div>
-                <div style="font-size: 0.65rem; font-weight: 700; opacity: 0.8; letter-spacing: 1px;">GASTO TOTAL</div>
-                <div style="font-size: 1.6rem; font-weight: 900;" id="displayTotalGasto">$0.00</div>
-            </div>
-            <div id="porcentajeText" style="font-size: 0.9rem; font-weight: 800;">0%</div>
+        <div class="total-banner">
+            <div class="total-label">INGRESOS (Toca para editar)</div>
+            <div class="total-amount" id="displayIngresos" onclick="setBudget()" style="color:var(--accent); font-size: 1.8rem; margin-bottom: 10px;">$0.00</div>
+            <hr style="border: 0; border-top: 1px solid var(--shadow); margin: 10px 0;">
+            <div class="total-label">GASTO ACTUAL</div>
+            <div class="total-amount" id="displayTotalGasto">$0.00</div>
         </div>
-        <div class="budget-progress">
-            <div class="progress-bar" id="bar"></div>
-        </div>
-    </div>
 
-    <nav>
-        <span id="t1" class="active" onclick="showPage(1)">NUEVO</span>
-        <span id="t2" onclick="showPage(2)">HISTORIAL</span>
-    </nav>
-
-    <div id="page1" class="page active">
-        <div class="input-group">
-            <input type="text" id="item" placeholder="¿En qué gastaste hoy?">
-            <input type="number" id="price" placeholder="Monto $" inputmode="decimal">
-            <button class="main-btn" onclick="agregarGasto()">REGISTRAR GASTO</button>
+        <div class="card">
+            <input type="text" id="item" placeholder="¿Qué compraste?">
+            <input type="number" id="price" placeholder="Precio" inputmode="decimal">
+            <button class="neubtn btn-save" onclick="agregarGasto()">Guardar Gasto</button>
         </div>
     </div>
 
     <div id="page2" class="page">
-        <div id="listaTransacciones"></div>
-        <button class="main-btn" style="margin-top: 20px; background: #3498db;" onclick="exportarASheets()">🚀 SINCRONIZAR SHEETS</button>
-        <button onclick="limpiar()" style="width:100%; background:none; border:none; color:#e57373; margin-top:30px; font-size:0.6rem; font-weight:bold; letter-spacing:1px;">BORRAR MEMORIA LOCAL</button>
+        <div id="listaTransacciones" style="width:100%; display:flex; flex-direction:column; align-items:center;"></div>
+        
+        <button class="neubtn btn-report" onclick="exportarASheets()">📁 Enviar a Google Sheets</button>
+        
+        <button onclick="limpiar()" style="margin-top: 50px; border:none; background:none; color: #e74c3c; font-size: 0.7rem; font-weight: bold; letter-spacing: 1px;">VACIAR DATOS DEL MÓVIL</button>
     </div>
 
     <script>
+        // URL DE TU SCRIPT DE GOOGLE SHEETS
         const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbz8c_aLEXO6wVgb4kVOKaokrqeETvJa7RefjCD4pntVAb60APUFHuIdR8MMBbeR_brZIg/exec";
-        
-        let db = JSON.parse(localStorage.getItem('pro_finance_v2')) || {
+
+        let db = JSON.parse(localStorage.getItem('neu_finance_v1')) || {
             name: "Mary",
             mode: "pink",
             ingresos: 0,
@@ -165,16 +168,13 @@
         function init() {
             document.body.className = db.mode;
             document.getElementById('userName').innerText = db.name;
-            document.getElementById('totalIngresos').innerText = "$" + db.ingresos.toFixed(2);
+            document.getElementById('displayIngresos').innerText = "$" + db.ingresos.toFixed(2);
             actualizarUI();
         }
 
-        function setMode(modeClass, name) {
-            db.mode = modeClass;
-            db.name = name;
-            save();
-            init();
-            notify("Cambiado a modo " + name, "#546e7a");
+        function setMode(m, n) {
+            db.mode = m; db.name = n;
+            save(); init();
         }
 
         function setBudget() {
@@ -182,70 +182,12 @@
             if(b !== null) { db.ingresos = parseFloat(b) || 0; save(); init(); }
         }
 
-        function agregarGasto() {
-            const item = document.getElementById('item');
-            const price = document.getElementById('price');
-            if(!item.value || !price.value) return notify("⚠️ Datos incompletos", "#ff8a80");
-
-            db.gastos.unshift({
-                id: Date.now(),
-                fecha: new Date().toLocaleDateString('es-ES'),
-                nombre: item.value,
-                costo: parseFloat(price.value).toFixed(2)
-            });
-
-            save();
-            actualizarUI();
-            notify("✅ Guardado", "#81c784");
-            item.value = ""; price.value = "";
-            item.blur(); price.blur();
-        }
-
-        function actualizarUI() {
-            const totalGasto = db.gastos.reduce((sum, g) => sum + parseFloat(g.costo), 0);
-            document.getElementById('displayTotalGasto').innerText = "$" + totalGasto.toFixed(2);
-            
-            const bar = document.getElementById('bar');
-            const card = document.getElementById('mainCard');
-            let porcentaje = (db.ingresos > 0) ? (totalGasto / db.ingresos) * 100 : 0;
-            
-            bar.style.width = Math.min(porcentaje, 100) + "%";
-            document.getElementById('porcentajeText').innerText = Math.round(porcentaje) + "%";
-
-            if (porcentaje >= 100) {
-                bar.style.backgroundColor = "#e57373";
-                card.classList.add('alarm-active');
-            } else {
-                bar.style.backgroundColor = (porcentaje >= 80) ? "#ffd54f" : "#81c784";
-                card.classList.remove('alarm-active');
-            }
-
-            document.getElementById('listaTransacciones').innerHTML = db.gastos.map(g => `
-                <div class="transaction-item">
-                    <div>
-                        <div style="font-weight:800; font-size:0.9rem">${g.nombre}</div>
-                        <div style="font-size:0.65rem; color:#90a4ae">${g.fecha}</div>
-                    </div>
-                    <div style="font-weight:900; color:#e57373">-$${g.costo}</div>
-                </div>
-            `).join('');
-        }
-
-        async function exportarASheets() {
-            if(db.gastos.length === 0) return notify("⚠️ No hay gastos", "#ff8a80");
-            notify("⏳ Sincronizando...", "#3498db");
-            try {
-                await fetch(WEB_APP_URL, { method: 'POST', mode: 'no-cors', body: JSON.stringify({ gastos: db.gastos }) });
-                notify("🚀 ¡Enviado a Google Sheets!", "#81c784");
-                db.gastos = []; save(); actualizarUI();
-            } catch (e) { notify("❌ Error de red", "#e57373"); }
-        }
-
         function showPage(n) {
             document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
             document.querySelectorAll('nav span').forEach(s => s.classList.remove('active'));
             document.getElementById('page'+n).classList.add('active');
             document.getElementById('t'+n).classList.add('active');
+            if(n === 2) actualizarUI();
         }
 
         function notify(m, c) {
@@ -254,8 +196,69 @@
             t.style.display = 'block'; setTimeout(() => t.style.display = 'none', 3000);
         }
 
-        function save() { localStorage.setItem('pro_finance_v2', JSON.stringify(db)); }
-        function limpiar() { if(confirm("¿Borrar datos locales?")) { db.gastos = []; save(); actualizarUI(); } }
+        function agregarGasto() {
+            const item = document.getElementById('item');
+            const price = document.getElementById('price');
+            if(!item.value || !price.value) return notify("⚠️ Datos incompletos", "#e67e22");
+
+            db.gastos.unshift({
+                fecha: new Date().toLocaleDateString('es-ES'),
+                nombre: item.value,
+                costo: parseFloat(price.value).toFixed(2)
+            });
+
+            save(); actualizarUI();
+            notify("✅ Guardado", varColor('--green'));
+            item.value = ""; price.value = ""; item.blur(); price.blur();
+        }
+
+        function actualizarUI() {
+            const total = db.gastos.reduce((sum, g) => sum + parseFloat(g.costo), 0);
+            const displayGasto = document.getElementById('displayTotalGasto');
+            displayGasto.innerText = `$${total.toFixed(2)}`;
+
+            // Alarma visual
+            if(db.ingresos > 0 && total > db.ingresos) {
+                displayGasto.classList.add('alarm-on');
+            } else {
+                displayGasto.classList.remove('alarm-on');
+            }
+
+            const container = document.getElementById('listaTransacciones');
+            container.innerHTML = db.gastos.map(g => `
+                <div class="transaction-item">
+                    <div>
+                        <div style="font-weight:800; font-size:0.9rem">${g.nombre}</div>
+                        <div style="font-size:0.6rem; color:#7f8c8d">${g.fecha}</div>
+                    </div>
+                    <div style="font-weight:900; color:var(--danger)">$${g.costo}</div>
+                </div>
+            `).join('');
+        }
+
+        async function exportarASheets() {
+            if(db.gastos.length === 0) return notify("⚠️ No hay datos", "#e67e22");
+            const btn = document.querySelector('.btn-report');
+            btn.innerText = "ENVIANDO..."; btn.disabled = true;
+
+            try {
+                await fetch(WEB_APP_URL, {
+                    method: 'POST', mode: 'no-cors',
+                    body: JSON.stringify({ gastos: db.gastos })
+                });
+                notify("🚀 Sincronizado con Sheets", "#3498db");
+                db.gastos = []; save(); actualizarUI();
+                setTimeout(() => showPage(1), 2000);
+            } catch (e) {
+                notify("❌ Error de red", "#e74c3c");
+            } finally {
+                btn.innerText = "📁 Enviar a Google Sheets"; btn.disabled = false;
+            }
+        }
+
+        function save() { localStorage.setItem('neu_finance_v1', JSON.stringify(db)); }
+        function limpiar() { if(confirm("¿Vaciar memoria local?")) { db.gastos = []; save(); actualizarUI(); } }
+        function varColor(name) { return getComputedStyle(document.body).getPropertyValue(name); }
 
         init();
     </script>
