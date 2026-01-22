@@ -1,8 +1,9 @@
-const CACHE_NAME = 'finance-gold-v1';
+const CACHE_NAME = 'finance-gold-v2';
 const ASSETS = [
   './',
   './index.html',
-  'https://i.ibb.co/mFByYmC/gold-logo.png'
+  './manifest.json',
+  './gold-logo.png'
 ];
 
 self.addEventListener('install', (e) => {
