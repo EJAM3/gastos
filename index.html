@@ -3,244 +3,49 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    
+    <link rel="icon" type="image/png" href="gold-logo.png"> <link rel="apple-touch-icon" href="gold-logo.png"> <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#d4af37">
     <meta name="apple-mobile-web-app-capable" content="yes">
-    <title>Finance Master Real-Time</title>
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Finance Gold">
+
+    <title>Finance Master Gold</title>
+    
     <style>
         :root {
-            --bg: #e0e5ec; --text: #2c3e50; --shadow: #a3b1c6; --light: #ffffff;
-            --accent: #3498db; --green: #27ae60; --danger: #e74c3c; --warn: #f1c40f;
+            --bg: #121212; 
+            --card: #1e1e1e;
+            --accent: #d4af37; /* El Dorado del Logo */
+            --text: #ffffff;
         }
-        body.pink {
-            --bg: #f5e6e8; --text: #5a4a4a; --shadow: #d1b8bc; --light: #ffffff;
-            --accent: #d4a5a5; --green: #81c784; --danger: #ff8a80; --warn: #ffd54f;
+        body { 
+            background-color: var(--bg); 
+            color: var(--text); 
+            font-family: -apple-system, sans-serif; 
+            margin: 0; 
+            text-align: center;
         }
-        body { background-color: var(--bg); font-family: -apple-system, sans-serif; margin: 0; padding-bottom: 30px; transition: 0.5s; }
-        
-        nav { display: flex; justify-content: space-around; padding: 15px; background: var(--bg); position: sticky; top: 0; z-index: 100; box-shadow: 0 4px 10px var(--shadow); }
-        nav span { font-weight: 800; color: #7f8c8d; padding: 8px 12px; border-radius: 12px; font-size: 0.7rem; }
-        nav span.active { color: var(--text); box-shadow: inset 4px 4px 8px var(--shadow), inset -4px -4px 8px var(--light); }
-
-        .page { display: none; padding: 20px; flex-direction: column; align-items: center; animation: fadeIn 0.3s; }
-        .page.active { display: block; }
-        @keyframes fadeIn { from {opacity:0} to {opacity:1} }
-
-        .card { width: 100%; max-width: 350px; background: var(--bg); padding: 20px; border-radius: 25px; box-shadow: 10px 10px 20px var(--shadow), -10px -10px 20px var(--light); box-sizing: border-box; margin: 0 auto 20px; }
-        
-        .health-bar { width: 100%; height: 10px; background: var(--bg); border-radius: 5px; margin: 10px 0; box-shadow: inset 2px 2px 5px var(--shadow), inset -2px -2px 5px var(--light); overflow: hidden; }
-        .health-fill { height: 100%; width: 0%; background: var(--green); transition: 0.5s; }
-
-        .neubtn { width: 100%; padding: 15px; border-radius: 12px; border: none; background: var(--bg); font-weight: 800; box-shadow: 5px 5px 10px var(--shadow), -5px -5px 10px var(--light); color: var(--text); cursor: pointer; }
-        .neubtn:active { box-shadow: inset 3px 3px 6px var(--shadow), inset -3px -3px 6px var(--light); }
-
-        input { width: 100%; padding: 12px; border-radius: 12px; border: none; margin-bottom: 10px; background: var(--bg); box-shadow: inset 4px 4px 8px var(--shadow), inset -4px -4px 8px var(--light); font-size: 1rem; outline: none; text-align: center; color: var(--text); box-sizing: border-box; }
-
-        .plan-row { padding: 12px 0; border-bottom: 1px solid rgba(0,0,0,0.05); }
-        .plan-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 5px; }
-        .plan-input-perc { width: 45px !important; margin: 0 !important; padding: 3px !important; font-size: 0.7rem !important; }
-        
-        .cat-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-bottom: 15px; }
-        .cat-item { padding: 12px; border-radius: 12px; font-size: 1.2rem; text-align: center; box-shadow: 3px 3px 6px var(--shadow), -3px -3px 6px var(--light); cursor: pointer; }
-        .cat-item.selected { box-shadow: inset 2px 2px 5px var(--shadow); transform: scale(0.95); background: rgba(0,0,0,0.02); }
-
-        .alarm { animation: pulse 1s infinite; color: var(--danger) !important; }
-        @keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.5; } 100% { opacity: 1; } }
+        .app-icon-header {
+            width: 120px;
+            height: 120px;
+            margin: 40px auto 10px;
+            border-radius: 25px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            background: url('gold-logo.png') no-repeat center;
+            background-size: cover;
+        }
+        /* ... resto de tus estilos ... */
     </style>
 </head>
-<body class="pink">
-
-    <nav>
-        <span id="t1" class="active" onclick="showPage(1)">📝 REGISTRO</span>
-        <span id="t2" onclick="showPage(2)">📋 PLAN</span>
-        <span id="t3" onclick="showPage(3)">📊 HISTORIAL</span>
-    </nav>
-
-    <div id="page1" class="page active">
-        <div class="card" style="text-align:center">
-            <div id="userNameShow" style="font-weight:900; letter-spacing:1px; margin-bottom:5px">MARY</div>
-            <div style="font-size:0.6rem; color:#7f8c8d; font-weight:800">ESTADO GENERAL DEL MES</div>
-            <div class="health-bar"><div id="mainHealthFill" class="health-fill"></div></div>
-            <div style="display:flex; justify-content: space-between; font-size:0.8rem; font-weight:900">
-                <span id="mainSpent">$0</span>
-                <span id="mainRemain" style="color:var(--green)">$0</span>
-            </div>
-        </div>
-
-        <div class="card">
-            <div class="cat-grid" id="catGrid"></div>
-            <input type="text" id="item" placeholder="¿Detalle del gasto?">
-            <input type="number" id="price" placeholder="Monto $" inputmode="decimal">
-            <button class="neubtn" style="color:var(--green)" onclick="agregarGasto()">REGISTRAR GASTO</button>
-        </div>
-        
-        <div style="display:flex; gap:10px; justify-content: center;">
-            <button class="neubtn" style="width:auto; padding:8px 15px; font-size:0.6rem" onclick="setMode('pink','Mary')">🌸 MARY</button>
-            <button class="neubtn" style="width:auto; padding:8px 15px; font-size:0.6rem" onclick="setMode('','Eliezer')">👔 ELIEZER</button>
-        </div>
-    </div>
-
-    <div id="page2" class="page">
-        <div class="card">
-            <div style="font-size:0.7rem; font-weight:bold; text-align:center; margin-bottom:10px">INGRESO MENSUAL TOTAL</div>
-            <input type="number" id="ingresoMaster" placeholder="$0.00" oninput="recalcPlan()" style="font-size:1.5rem; font-weight:900; color:var(--green)">
-            <div id="totalCheck" style="text-align:center; font-size:0.7rem; font-weight:800">Suma: 100% ✅</div>
-        </div>
-        <div class="card" id="planDetalle"></div>
-    </div>
-
-    <div id="page3" class="page">
-        <div id="listaTransacciones" style="width:100%; max-width:350px; margin: 0 auto;"></div>
-        <div class="card" style="text-align:center">
-            <button class="neubtn" style="color:var(--accent)" onclick="exportarASheets()">🚀 SINCRONIZAR SHEETS</button>
-            <button onclick="limpiar()" style="margin-top:20px; border:none; background:none; color:var(--danger); font-size:0.6rem; font-weight:800; opacity:0.5">BORRAR TODO</button>
-        </div>
-    </div>
-
+<body>
+    <div class="app-icon-header"></div>
+    <h2 style="color:var(--accent); letter-spacing: 2px;">FINANCE MASTER</h2>
+    
     <script>
-        const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbz8c_aLEXO6wVgb4kVOKaokrqeETvJa7RefjCD4pntVAb60APUFHuIdR8MMBbeR_brZIg/exec";
-        
-        let db = JSON.parse(localStorage.getItem('fin_master_v4')) || {
-            name: "Mary", mode: "pink", ingreso: 0, gastos: [], selectedCatIndex: 3,
-            rubros: [
-                { n: "Diezmos / Ofrendas", p: 10, e: "⛪", gastado: 0 },
-                { n: "Ahorro / Inversión", p: 15, e: "💰", gastado: 0 },
-                { n: "Vivienda / Serv.", p: 30, e: "🏠", gastado: 0 },
-                { n: "Alimentación", p: 15, e: "🛒", gastado: 0 },
-                { n: "Donación / Ayuda", p: 5, e: "🎁", gastado: 0 },
-                { n: "Transporte", p: 10, e: "🚗", gastado: 0 },
-                { n: "Libre / Ocio", p: 15, e: "🍿", gastado: 0 }
-            ]
-        };
-
-        function init() {
-            document.body.className = db.mode;
-            document.getElementById('userNameShow').innerText = db.name;
-            document.getElementById('ingresoMaster').value = db.ingreso;
-            generarCatGrid();
-            actualizarUI();
-            recalcPlan();
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('./sw.js');
         }
-
-        function generarCatGrid() {
-            const grid = document.getElementById('catGrid');
-            grid.innerHTML = db.rubros.map((r, i) => `
-                <div class="cat-item ${i===db.selectedCatIndex?'selected':''}" onclick="selectCat(${i}, this)">${r.e}</div>
-            `).join('');
-        }
-
-        function selectCat(idx, el) { 
-            db.selectedCatIndex = idx; 
-            document.querySelectorAll('.cat-item').forEach(i => i.classList.remove('selected'));
-            el.classList.add('selected');
-        }
-
-        function recalcPlan() {
-            db.ingreso = parseFloat(document.getElementById('ingresoMaster').value) || 0;
-            const container = document.getElementById('planDetalle');
-            let sumaP = 0;
-            
-            // Recalcular el gasto acumulado por rubro desde el historial
-            db.rubros.forEach(r => r.gastado = 0);
-            db.gastos.forEach(g => {
-                if(g.catIdx !== undefined) db.rubros[g.catIdx].gastado += parseFloat(g.costo);
-            });
-
-            container.innerHTML = db.rubros.map((r, i) => {
-                sumaP += r.p;
-                const montoMax = (db.ingreso * r.p) / 100;
-                const disponible = montoMax - r.gastado;
-                const percUso = montoMax > 0 ? (r.gastado / montoMax) * 100 : 0;
-                
-                return `
-                    <div class="plan-row">
-                        <div class="plan-header">
-                            <span style="font-size:0.8rem">${r.e} <b>${r.n}</b></span>
-                            <input type="number" class="plan-input-perc" value="${r.p}" oninput="cambiarPerc(${i}, this.value)">
-                        </div>
-                        <div class="health-bar"><div class="health-fill" style="width:${Math.min(percUso, 100)}%; background:${percUso > 100 ? 'var(--danger)' : 'var(--accent)'}"></div></div>
-                        <div style="display:flex; justify-content:space-between; font-size:0.7rem; font-weight:700">
-                            <span>Disp: $${disponible.toFixed(2)}</span>
-                            <span style="opacity:0.5">Total: $${montoMax.toFixed(2)}</span>
-                        </div>
-                    </div>
-                `;
-            }).join('');
-
-            const check = document.getElementById('totalCheck');
-            check.innerText = `Suma: ${sumaP}% ${sumaP === 100 ? '✅' : '❌'}`;
-            check.style.color = sumaP === 100 ? 'var(--green)' : 'var(--danger)';
-            save();
-            actualizarMainBar();
-        }
-
-        function cambiarPerc(idx, val) {
-            db.rubros[idx].p = parseFloat(val) || 0;
-            recalcPlan();
-        }
-
-        function agregarGasto() {
-            const item = document.getElementById('item');
-            const price = document.getElementById('price');
-            if(!price.value) return;
-
-            const monto = parseFloat(price.value);
-            db.gastos.unshift({
-                fecha: new Date().toLocaleDateString('es-ES'),
-                nombre: db.rubros[db.selectedCatIndex].e + " " + (item.value || db.rubros[db.selectedCatIndex].n),
-                costo: monto.toFixed(2),
-                catIdx: db.selectedCatIndex
-            });
-
-            save();
-            actualizarUI();
-            recalcPlan();
-            item.value = ""; price.value = "";
-        }
-
-        function actualizarMainBar() {
-            const totalGasto = db.gastos.reduce((sum, g) => sum + parseFloat(g.costo), 0);
-            const remain = db.ingreso - totalGasto;
-            const porc = db.ingreso > 0 ? (totalGasto / db.ingreso) * 100 : 0;
-
-            document.getElementById('mainSpent').innerText = "$" + totalGasto.toFixed(2);
-            document.getElementById('mainRemain').innerText = "$" + remain.toFixed(2);
-            
-            const fill = document.getElementById('mainHealthFill');
-            fill.style.width = Math.min(porc, 100) + "%";
-            fill.style.backgroundColor = porc > 100 ? 'var(--danger)' : (porc > 85 ? 'var(--warn)' : 'var(--green)');
-            
-            if(porc > 100) document.getElementById('mainSpent').classList.add('alarm');
-            else document.getElementById('mainSpent').classList.remove('alarm');
-        }
-
-        function actualizarUI() {
-            const container = document.getElementById('listaTransacciones');
-            container.innerHTML = db.gastos.map(g => `
-                <div class="card" style="padding:15px; margin-bottom:10px; display:flex; justify-content:space-between; align-items:center">
-                    <div style="font-size:0.8rem; font-weight:bold">${g.nombre}<div style="font-size:0.6rem; color:#7f8c8d">${g.fecha}</div></div>
-                    <div style="font-weight:900; color:var(--danger)">-$${g.costo}</div>
-                </div>
-            `).join('');
-        }
-
-        function setMode(m, n) { db.mode = m; db.name = n; save(); init(); }
-        function save() { localStorage.setItem('fin_master_v4', JSON.stringify(db)); }
-        function showPage(n) {
-            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-            document.querySelectorAll('nav span').forEach(s => s.classList.remove('active'));
-            document.getElementById('page'+n).classList.add('active');
-            document.getElementById('t'+n).classList.add('active');
-        }
-        function limpiar() { if(confirm("¿Borrar todo el historial?")) { db.gastos = []; save(); init(); } }
-
-        async function exportarASheets() {
-            if(db.gastos.length === 0) return;
-            try {
-                await fetch(WEB_APP_URL, { method: 'POST', mode: 'no-cors', body: JSON.stringify({ gastos: db.gastos }) });
-                alert("Sincronizado con éxito");
-            } catch (e) { alert("Error de red"); }
-        }
-
-        init();
     </script>
 </body>
 </html>
