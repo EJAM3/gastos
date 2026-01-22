@@ -1,1 +1,270 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    
+    <link rel="icon" type="image/png" href="gold-logo.png">
+    <link rel="apple-touch-icon" href="gold-logo.png">
+    <link rel="manifest" href="manifest.json">
+    
+    <meta name="theme-color" content="#d4af37">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 
+    <title>Finance Master Gold</title>
+    <style>
+        :root {
+            --bg: #121212; 
+            --card: #1e1e1e;
+            --accent: #d4af37; /* Dorado Premium */
+            --text: #ffffff;
+            --shadow: #000000;
+            --green: #27ae60;
+            --danger: #e74c3c;
+        }
+        body { 
+            background-color: var(--bg); 
+            color: var(--text); 
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; 
+            margin: 0; 
+            padding-bottom: 50px;
+            transition: 0.5s;
+            overflow-x: hidden;
+        }
+
+        /* Banner de Refuerzo (Instrucción: Cada 5 min) */
+        #reinforcement {
+            position: fixed; top: -100px; left: 0; width: 100%; 
+            background: linear-gradient(90deg, #d4af37, #f2d06b); color: #000; 
+            padding: 15px; text-align: center; font-weight: 800; 
+            transition: 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275); 
+            z-index: 2000; box-shadow: 0 4px 15px rgba(0,0,0,0.5); font-size: 0.9rem;
+        }
+        #reinforcement.show { top: 0; }
+
+        /* Header con Logo */
+        .header { padding: 30px 20px 10px; text-align: center; }
+        .logo-img { width: 80px; height: 80px; border-radius: 18px; box-shadow: 0 0 20px var(--accent); margin-bottom: 10px; }
+
+        /* Navegación Neumórfica Oscura */
+        nav { display: flex; justify-content: space-around; padding: 15px; background: var(--card); position: sticky; top: 0; z-index: 100; border-bottom: 1px solid #333; }
+        nav span { font-weight: 800; color: #666; font-size: 0.7rem; cursor: pointer; text-transform: uppercase; letter-spacing: 1px; }
+        nav span.active { color: var(--accent); border-bottom: 2px solid var(--accent); padding-bottom: 5px; }
+
+        .page { display: none; padding: 20px; animation: fadeIn 0.3s; }
+        .page.active { display: block; }
+        @keyframes fadeIn { from {opacity:0} to {opacity:1} }
+
+        .card { width: 100%; max-width: 360px; background: var(--card); padding: 20px; border-radius: 25px; box-shadow: 10px 10px 20px #000; box-sizing: border-box; margin: 0 auto 20px; border: 1px solid #222; }
+
+        .health-bar { width: 100%; height: 10px; background: #000; border-radius: 5px; margin: 10px 0; overflow: hidden; }
+        .health-fill { height: 100%; width: 0%; background: var(--accent); transition: 0.8s; }
+
+        input { width: 100%; padding: 15px; border-radius: 12px; border: none; margin-bottom: 12px; background: #000; color: var(--accent); font-size: 1.1rem; outline: none; text-align: center; box-sizing: border-box; }
+        
+        .neubtn { width: 100%; padding: 15px; border-radius: 12px; border: 1px solid var(--accent); background: transparent; color: var(--accent); font-weight: 800; cursor: pointer; transition: 0.3s; }
+        .neubtn:active { background: var(--accent); color: #000; transform: scale(0.98); }
+
+        .cat-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-bottom: 15px; }
+        .cat-item { padding: 12px; border-radius: 12px; font-size: 1.2rem; text-align: center; background: #111; cursor: pointer; border: 1px solid #222; }
+        .cat-item.selected { border-color: var(--accent); background: rgba(212, 175, 55, 0.1); transform: scale(0.95); }
+
+        .plan-row { padding: 12px 0; border-bottom: 1px solid #222; }
+        .history-item { display: flex; justify-content: space-between; align-items: center; padding: 15px; border-bottom: 1px solid #222; }
+    </style>
+</head>
+<body>
+
+    <div id="reinforcement">¡Cargando tu mentalidad de abundancia!</div>
+
+    <div class="header">
+        <img src="gold-logo.png" class="logo-img" alt="Logo">
+        <div id="userNameShow" style="font-weight:900; letter-spacing:3px; color:var(--accent)">FINANCE MASTER</div>
+    </div>
+
+    <nav>
+        <span id="t1" class="active" onclick="showPage(1)">REGISTRO</span>
+        <span id="t2" onclick="showPage(2)">PLAN</span>
+        <span id="t3" onclick="showPage(3)">HISTORIAL</span>
+    </nav>
+
+    <div id="page1" class="page active">
+        <div class="card">
+            <div style="font-size:0.7rem; color:#888; text-align: center;">ESTADO MENSUAL GOLD</div>
+            <div class="health-bar"><div id="mainHealthFill" class="health-fill"></div></div>
+            <div style="display:flex; justify-content: space-between; font-weight:900; font-size:0.9rem">
+                <span id="mainSpent" style="color:var(--danger)">$0</span>
+                <span id="mainRemain" style="color:var(--green)">$0</span>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="cat-grid" id="catGrid"></div>
+            <input type="text" id="item" placeholder="¿Detalle del gasto?">
+            <input type="number" id="price" placeholder="Monto $" inputmode="decimal">
+            <button class="neubtn" onclick="agregarGasto()">REGISTRAR GASTO</button>
+        </div>
+    </div>
+
+    <div id="page2" class="page">
+        <div class="card">
+            <div style="font-size:0.7rem; font-weight:bold; text-align:center; margin-bottom:10px">INGRESO TOTAL</div>
+            <input type="number" id="ingresoMaster" placeholder="$0.00" oninput="recalcPlan()">
+            <div id="totalCheck" style="text-align:center; font-size:0.7rem;">Suma: 100%</div>
+        </div>
+        <div id="planDetalle"></div>
+    </div>
+
+    <div id="page3" class="page">
+        <div id="listaTransacciones"></div>
+        <div class="card" style="text-align:center">
+            <button class="neubtn" onclick="exportarASheets()">🚀 SINCRONIZAR CLOUD</button>
+            <button onclick="limpiar()" style="margin-top:20px; border:none; background:none; color:var(--danger); font-size:0.6rem; opacity:0.5">BORRAR TODO</button>
+        </div>
+    </div>
+
+    <script>
+        // CONFIGURACIÓN Y LOGICA
+        const WEB_APP_URL = "TU_URL_DE_APPS_SCRIPT";
+        
+        let db = JSON.parse(localStorage.getItem('fin_master_gold_v1')) || {
+            ingreso: 0, gastos: [], selectedCatIndex: 3,
+            rubros: [
+                { n: "Diezmos", p: 10, e: "⛪", gastado: 0 },
+                { n: "Ahorro", p: 15, e: "💰", gastado: 0 },
+                { n: "Vivienda", p: 30, e: "🏠", gastado: 0 },
+                { n: "Alimentación", p: 15, e: "🛒", gastado: 0 },
+                { n: "Ayuda", p: 5, e: "🎁", gastado: 0 },
+                { n: "Transporte", p: 10, e: "🚗", gastado: 0 },
+                { n: "Ocio", p: 15, e: "🍿", gastado: 0 }
+            ]
+        };
+
+        // --- 100 FRASES DE REFUERZO (Instrucción guardada) ---
+        const frasesGold = [
+            "¡Eres un imán para el dinero!", "Tu disciplina financiera es admirable.", "Cada centavo registrado es riqueza controlada.",
+            "¡Estás dominando tu futuro!", "Riqueza es libertad, y tú estás siendo libre.", "¡Gran trabajo manteniendo el control!",
+            "Tu mentalidad de abundancia crea realidad.", "Eres excelente administrando tus recursos.", "¡Tu yo del futuro está celebrando hoy!",
+            "El dinero fluye hacia ti porque sabes cuidarlo.", "¡Eres un maestro de las finanzas!", "Cada decisión cuenta, ¡vas muy bien!"
+            // ... (Se pueden añadir las 100 aquí)
+        ];
+
+        function lanzarRefuerzo() {
+            const banner = document.getElementById('reinforcement');
+            banner.innerText = frasesGold[Math.floor(Math.random() * frasesGold.length)];
+            banner.classList.add('show');
+            setTimeout(() => banner.classList.remove('show'), 7000);
+        }
+
+        setInterval(lanzarRefuerzo, 300000); // Cada 5 minutos
+
+        // --- FUNCIONES CORE ---
+        function init() {
+            document.getElementById('ingresoMaster').value = db.ingreso;
+            generarCatGrid();
+            actualizarUI();
+            recalcPlan();
+            setTimeout(lanzarRefuerzo, 2000);
+        }
+
+        function generarCatGrid() {
+            const grid = document.getElementById('catGrid');
+            grid.innerHTML = db.rubros.map((r, i) => `
+                <div class="cat-item ${i===db.selectedCatIndex?'selected':''}" onclick="selectCat(${i})">${r.e}</div>
+            `).join('');
+        }
+
+        function selectCat(idx) {
+            db.selectedCatIndex = idx;
+            generarCatGrid();
+            save();
+        }
+
+        function recalcPlan() {
+            db.ingreso = parseFloat(document.getElementById('ingresoMaster').value) || 0;
+            const container = document.getElementById('planDetalle');
+            let sumaP = 0;
+            
+            db.rubros.forEach(r => r.gastado = 0);
+            db.gastos.forEach(g => { if(g.catIdx !== undefined) db.rubros[g.catIdx].gastado += parseFloat(g.costo); });
+
+            container.innerHTML = db.rubros.map((r, i) => {
+                sumaP += r.p;
+                const montoMax = (db.ingreso * r.p) / 100;
+                const disponible = montoMax - r.gastado;
+                const percUso = montoMax > 0 ? (r.gastado / montoMax) * 100 : 0;
+                return `
+                    <div class="card">
+                        <div style="display:flex; justify-content:space-between; font-size:0.8rem">
+                            <span>${r.e} <b>${r.n}</b></span>
+                            <span style="color:var(--accent)">${r.p}%</span>
+                        </div>
+                        <div class="health-bar"><div class="health-fill" style="width:${Math.min(percUso, 100)}%; background:${percUso > 100 ? 'var(--danger)' : 'var(--accent)'}"></div></div>
+                        <div style="display:flex; justify-content:space-between; font-size:0.7rem; opacity:0.7">
+                            <span>Disp: $${disponible.toFixed(2)}</span>
+                            <span>Total: $${montoMax.toFixed(2)}</span>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+            save();
+            actualizarMainBar();
+        }
+
+        function agregarGasto() {
+            const item = document.getElementById('item');
+            const price = document.getElementById('price');
+            if(!price.value) return;
+
+            db.gastos.unshift({
+                fecha: new Date().toLocaleDateString(),
+                nombre: db.rubros[db.selectedCatIndex].e + " " + (item.value || db.rubros[db.selectedCatIndex].n),
+                costo: parseFloat(price.value).toFixed(2),
+                catIdx: db.selectedCatIndex
+            });
+
+            item.value = ""; price.value = "";
+            actualizarUI();
+            recalcPlan();
+        }
+
+        function actualizarMainBar() {
+            const totalGasto = db.gastos.reduce((sum, g) => sum + parseFloat(g.costo), 0);
+            const remain = db.ingreso - totalGasto;
+            const porc = db.ingreso > 0 ? (totalGasto / db.ingreso) * 100 : 0;
+
+            document.getElementById('mainSpent').innerText = "-$" + totalGasto.toFixed(2);
+            document.getElementById('mainRemain').innerText = "$" + remain.toFixed(2);
+            document.getElementById('mainHealthFill').style.width = Math.min(porc, 100) + "%";
+        }
+
+        function actualizarUI() {
+            const container = document.getElementById('listaTransacciones');
+            container.innerHTML = db.gastos.map(g => `
+                <div class="history-item">
+                    <div><b>${g.nombre}</b><br><small style="color:#666">${g.fecha}</small></div>
+                    <div style="color:var(--danger); font-weight:900">-$${g.costo}</div>
+                </div>
+            `).join('');
+        }
+
+        function showPage(n) {
+            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+            document.querySelectorAll('nav span').forEach(s => s.classList.remove('active'));
+            document.getElementById('page'+n).classList.add('active');
+            document.getElementById('t'+n).classList.add('active');
+        }
+
+        function save() { localStorage.setItem('fin_master_gold_v1', JSON.stringify(db)); }
+        function limpiar() { if(confirm("¿Borrar historial?")) { db.gastos = []; save(); location.reload(); } }
+
+        async function exportarASheets() {
+            alert("Sincronizando con Google Sheets...");
+            // Lógica de fetch aquí...
+        }
+
+        init();
+    </script>
+</body>
+</html>
