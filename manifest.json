@@ -1,0 +1,17 @@
+{
+  "name": "Finance Master Gold Edition",
+  "short_name": "FinanceMaster",
+  "description": "Gestión financiera de alto nivel",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#1a1a1a",
+  "theme_color": "#d4af37",
+  "icons": [
+    {
+      "src": "https://i.ibb.co/mFByYmC/gold-logo.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}

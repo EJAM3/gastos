@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#d4af37">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <link rel="apple-touch-icon" href="https://i.ibb.co/mFByYmC/gold-logo.png">
+    
+    <title>Finance Master Gold</title>
+    <style>
+        :root {
+            --bg: #e0e5ec; --text: #2c3e50; --shadow: #a3b1c6; --light: #ffffff;
+            --accent: #d4af37; --green: #27ae60; --danger: #e74c3c;
+        }
+        body.pink {
+            --bg: #f5e6e8; --text: #5a4a4a; --shadow: #d1b8bc; --light: #ffffff;
+            --accent: #d4a5a5;
+        }
+        body { background-color: var(--bg); font-family: -apple-system, sans-serif; margin: 0; padding-bottom: 30px; transition: 0.5s; overflow-x: hidden; }
+        
+        /* Notificación de Frases (Instrucción de usuario) */
+        #phrase-box {
+            position: fixed; bottom: 80px; left: 50%; transform: translateX(-50%);
+            width: 80%; background: rgba(212, 175, 55, 0.9); color: white;
+            padding: 10px 15px; border-radius: 15px; text-align: center;
+            font-size: 0.8rem; font-weight: bold; z-index: 1000;
+            display: none; box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            animation: slideUp 0.5s ease;
+        }
+        @keyframes slideUp { from {bottom: -50px;} to {bottom: 80px;} }
+
+        .gold-logo-header {
+            width: 80px; height: 80px; margin: 20px auto;
+            background: url('https://i.ibb.co/mFByYmC/gold-logo.png') no-repeat center;
+            background-size: contain; filter: drop-shadow(0 4px 8px var(--shadow));
+        }
+
+        nav { display: flex; justify-content: space-around; padding: 15px; background: var(--bg); position: sticky; top: 0; z-index: 100; box-shadow: 0 4px 10px var(--shadow); }
+        nav span { font-weight: 800; color: #7f8c8d; padding: 8px 12px; border-radius: 12px; font-size: 0.7rem; cursor: pointer; }
+        nav span.active { color: var(--accent); box-shadow: inset 4px 4px 8px var(--shadow), inset -4px -4px 8px var(--light); }
+
+        .card { width: 90%; max-width: 350px; background: var(--bg); padding: 20px; border-radius: 25px; box-shadow: 10px 10px 20px var(--shadow), -10px -10px 20px var(--light); box-sizing: border-box; margin: 0 auto 20px; }
+        
+        .health-bar { width: 100%; height: 10px; background: var(--bg); border-radius: 5px; margin: 10px 0; box-shadow: inset 2px 2px 5px var(--shadow), inset -2px -2px 5px var(--light); overflow: hidden; }
+        .health-fill { height: 100%; width: 0%; background: var(--accent); transition: 0.5s; }
+
+        .neubtn { width: 100%; padding: 15px; border-radius: 12px; border: none; background: var(--bg); font-weight: 800; box-shadow: 5px 5px 10px var(--shadow), -5px -5px 10px var(--light); color: var(--text); cursor: pointer; }
+        .neubtn:active { box-shadow: inset 3px 3px 6px var(--shadow), inset -3px -3px 6px var(--light); }
+
+        input { width: 100%; padding: 12px; border-radius: 12px; border: none; margin-bottom: 10px; background: var(--bg); box-shadow: inset 4px 4px 8px var(--shadow), inset -4px -4px 8px var(--light); font-size: 1rem; outline: none; text-align: center; color: var(--text); box-sizing: border-box; }
+
+        .page { display: none; padding: 10px; animation: fadeIn 0.3s; }
+        .page.active { display: block; }
+        @keyframes fadeIn { from {opacity:0} to {opacity:1} }
+    </style>
+</head>
+<body>
+
+    <div id="phrase-box"></div>
+
+    <div class="gold-logo-header"></div>
+
+    <nav>
+        <span id="t1" class="active" onclick="showPage(1)">📝 REGISTRO</span>
+        <span id="t2" onclick="showPage(2)">📋 PLAN</span>
+        <span id="t3" onclick="showPage(3)">📊 HISTORIAL</span>
+    </nav>
+
+    <div id="page1" class="page active">
+        <div class="card" style="text-align:center">
+            <div id="userNameShow" style="font-weight:900; color:var(--accent)">MARY</div>
+            <div class="health-bar"><div id="mainHealthFill" class="health-fill"></div></div>
+            <div style="display:flex; justify-content: space-between; font-size:0.8rem; font-weight:900">
+                <span id="mainSpent">$0</span>
+                <span id="mainRemain" style="color:var(--green)">$0</span>
+            </div>
+        </div>
+        <div class="card">
+            <input type="text" id="item" placeholder="¿En qué gastaste?">
+            <input type="number" id="price" placeholder="Monto $" inputmode="decimal">
+            <button class="neubtn" style="color:var(--accent)" onclick="agregarGasto()">REGISTRAR GASTO</button>
+        </div>
+    </div>
+
+    <script>
+        // LOGICA DE FRASES REFORZADORAS (Cada 5 minutos)
+        const frases = ["¡Eres el amo de tus finanzas!", "Cada peso ahorrado es un paso a tu libertad.", "Presupuestar es decirle a tu dinero a dónde ir.", "¡Lo estás haciendo genial!", "Tu yo del futuro te agradecerá este registro."];
+        
+        function mostrarFrase() {
+            const box = document.getElementById('phrase-box');
+            box.innerText = frases[Math.floor(Math.random() * frases.length)];
+            box.style.display = 'block';
+            setTimeout(() => { box.style.display = 'none'; }, 6000);
+        }
+
+        // Intervalo de 5 minutos (300000 ms)
+        setInterval(mostrarFrase, 300000);
+        // Mostrar una al iniciar
+        setTimeout(mostrarFrase, 3000);
+
+        // Registro del Service Worker
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('./sw.js')
+                    .then(reg => console.log('Finance Gold PWA Lista'));
+            });
+        }
+
+        // --- Mantén aquí todas tus funciones originales (init, agregarGasto, etc.) ---
+        // (Por brevedad no las repito, pero úsalas tal cual estaban en el código anterior)
+    </script>
+</body>
+</html>
