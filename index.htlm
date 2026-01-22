@@ -4,113 +4,96 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     
+    <link rel="icon" type="image/png" href="gold-logo.png">
+    <link rel="apple-touch-icon" href="gold-logo.png">
     <link rel="manifest" href="manifest.json">
     <meta name="theme-color" content="#d4af37">
     <meta name="apple-mobile-web-app-capable" content="yes">
-    <link rel="apple-touch-icon" href="https://i.ibb.co/mFByYmC/gold-logo.png">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     
     <title>Finance Master Gold</title>
     <style>
         :root {
-            --bg: #e0e5ec; --text: #2c3e50; --shadow: #a3b1c6; --light: #ffffff;
-            --accent: #d4af37; --green: #27ae60; --danger: #e74c3c;
+            --bg: #1a1a1a; /* Fondo oscuro para resaltar el dorado */
+            --card-bg: #242424;
+            --text: #e0e0e0;
+            --accent: #d4af37; /* Dorado */
+            --shadow: #000000;
+            --light: #333333;
         }
-        body.pink {
-            --bg: #f5e6e8; --text: #5a4a4a; --shadow: #d1b8bc; --light: #ffffff;
-            --accent: #d4a5a5;
-        }
-        body { background-color: var(--bg); font-family: -apple-system, sans-serif; margin: 0; padding-bottom: 30px; transition: 0.5s; overflow-x: hidden; }
+        body { background-color: var(--bg); font-family: -apple-system, sans-serif; margin: 0; color: var(--text); padding-bottom: 40px; }
         
-        /* Notificación de Frases (Instrucción de usuario) */
-        #phrase-box {
-            position: fixed; bottom: 80px; left: 50%; transform: translateX(-50%);
-            width: 80%; background: rgba(212, 175, 55, 0.9); color: white;
-            padding: 10px 15px; border-radius: 15px; text-align: center;
-            font-size: 0.8rem; font-weight: bold; z-index: 1000;
-            display: none; box-shadow: 0 4px 15px rgba(0,0,0,0.2);
-            animation: slideUp 0.5s ease;
+        /* Banner de Refuerzo (Cada 5 min) */
+        #reinforcement {
+            position: fixed; top: -100px; left: 0; width: 100%; 
+            background: var(--accent); color: #000; padding: 15px;
+            text-align: center; font-weight: 800; transition: 0.5s; z-index: 2000;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.5); font-size: 0.9rem;
         }
-        @keyframes slideUp { from {bottom: -50px;} to {bottom: 80px;} }
+        #reinforcement.show { top: 0; }
 
-        .gold-logo-header {
-            width: 80px; height: 80px; margin: 20px auto;
-            background: url('https://i.ibb.co/mFByYmC/gold-logo.png') no-repeat center;
-            background-size: contain; filter: drop-shadow(0 4px 8px var(--shadow));
-        }
+        .logo-container { text-align: center; padding: 30px 0; }
+        .logo-container img { width: 100px; filter: drop-shadow(0 0 10px var(--accent)); }
 
-        nav { display: flex; justify-content: space-around; padding: 15px; background: var(--bg); position: sticky; top: 0; z-index: 100; box-shadow: 0 4px 10px var(--shadow); }
-        nav span { font-weight: 800; color: #7f8c8d; padding: 8px 12px; border-radius: 12px; font-size: 0.7rem; cursor: pointer; }
-        nav span.active { color: var(--accent); box-shadow: inset 4px 4px 8px var(--shadow), inset -4px -4px 8px var(--light); }
+        nav { display: flex; justify-content: space-around; padding: 15px; background: var(--card-bg); sticky: top; z-index: 100; border-bottom: 1px solid var(--accent); }
+        nav span { font-weight: 800; color: #777; font-size: 0.7rem; cursor: pointer; }
+        nav span.active { color: var(--accent); text-shadow: 0 0 5px var(--accent); }
 
-        .card { width: 90%; max-width: 350px; background: var(--bg); padding: 20px; border-radius: 25px; box-shadow: 10px 10px 20px var(--shadow), -10px -10px 20px var(--light); box-sizing: border-box; margin: 0 auto 20px; }
+        .card { width: 90%; max-width: 400px; background: var(--card-bg); padding: 20px; border-radius: 20px; margin: 20px auto; box-shadow: 5px 5px 15px var(--shadow); border: 1px solid #333; }
         
-        .health-bar { width: 100%; height: 10px; background: var(--bg); border-radius: 5px; margin: 10px 0; box-shadow: inset 2px 2px 5px var(--shadow), inset -2px -2px 5px var(--light); overflow: hidden; }
-        .health-fill { height: 100%; width: 0%; background: var(--accent); transition: 0.5s; }
+        .health-bar { width: 100%; height: 8px; background: #111; border-radius: 4px; margin: 10px 0; overflow: hidden; }
+        .health-fill { height: 100%; width: 50%; background: var(--accent); transition: 0.8s ease-in-out; }
 
-        .neubtn { width: 100%; padding: 15px; border-radius: 12px; border: none; background: var(--bg); font-weight: 800; box-shadow: 5px 5px 10px var(--shadow), -5px -5px 10px var(--light); color: var(--text); cursor: pointer; }
-        .neubtn:active { box-shadow: inset 3px 3px 6px var(--shadow), inset -3px -3px 6px var(--light); }
-
-        input { width: 100%; padding: 12px; border-radius: 12px; border: none; margin-bottom: 10px; background: var(--bg); box-shadow: inset 4px 4px 8px var(--shadow), inset -4px -4px 8px var(--light); font-size: 1rem; outline: none; text-align: center; color: var(--text); box-sizing: border-box; }
-
-        .page { display: none; padding: 10px; animation: fadeIn 0.3s; }
-        .page.active { display: block; }
-        @keyframes fadeIn { from {opacity:0} to {opacity:1} }
+        input { width: 100%; padding: 15px; border-radius: 12px; border: none; margin-bottom: 10px; background: #111; color: var(--accent); font-size: 1rem; text-align: center; box-sizing: border-box; }
+        .neubtn { width: 100%; padding: 15px; border-radius: 12px; border: 1px solid var(--accent); background: transparent; color: var(--accent); font-weight: 800; cursor: pointer; text-transform: uppercase; }
+        .neubtn:active { background: var(--accent); color: #000; }
     </style>
 </head>
 <body>
 
-    <div id="phrase-box"></div>
+    <div id="reinforcement">¡Tu disciplina financiera es tu mayor activo! 💰</div>
 
-    <div class="gold-logo-header"></div>
+    <div class="logo-container">
+        <img src="gold-logo.png" alt="Logo">
+    </div>
 
     <nav>
-        <span id="t1" class="active" onclick="showPage(1)">📝 REGISTRO</span>
-        <span id="t2" onclick="showPage(2)">📋 PLAN</span>
-        <span id="t3" onclick="showPage(3)">📊 HISTORIAL</span>
+        <span class="active">📝 REGISTRO</span>
+        <span>📋 PLAN</span>
+        <span>📊 HISTORIAL</span>
     </nav>
 
-    <div id="page1" class="page active">
-        <div class="card" style="text-align:center">
-            <div id="userNameShow" style="font-weight:900; color:var(--accent)">MARY</div>
-            <div class="health-bar"><div id="mainHealthFill" class="health-fill"></div></div>
-            <div style="display:flex; justify-content: space-between; font-size:0.8rem; font-weight:900">
-                <span id="mainSpent">$0</span>
-                <span id="mainRemain" style="color:var(--green)">$0</span>
-            </div>
-        </div>
-        <div class="card">
-            <input type="text" id="item" placeholder="¿En qué gastaste?">
-            <input type="number" id="price" placeholder="Monto $" inputmode="decimal">
-            <button class="neubtn" style="color:var(--accent)" onclick="agregarGasto()">REGISTRAR GASTO</button>
-        </div>
+    <div class="card">
+        <div style="text-align: center; margin-bottom: 10px; font-weight: 900; letter-spacing: 2px;">SALDO DISPONIBLE</div>
+        <div class="health-bar"><div class="health-fill" id="bar"></div></div>
+        <input type="number" placeholder="Monto $">
+        <button class="neubtn">Registrar Gasto Gold</button>
     </div>
 
     <script>
-        // LOGICA DE FRASES REFORZADORAS (Cada 5 minutos)
-        const frases = ["¡Eres el amo de tus finanzas!", "Cada peso ahorrado es un paso a tu libertad.", "Presupuestar es decirle a tu dinero a dónde ir.", "¡Lo estás haciendo genial!", "Tu yo del futuro te agradecerá este registro."];
-        
-        function mostrarFrase() {
-            const box = document.getElementById('phrase-box');
-            box.innerText = frases[Math.floor(Math.random() * frases.length)];
-            box.style.display = 'block';
-            setTimeout(() => { box.style.display = 'none'; }, 6000);
+        // SISTEMA DE REFUERZO CADA 5 MINUTOS (Instrucción Guardada)
+        const frases = [
+            "¡El éxito financiero está en tus manos!",
+            "Cada registro es una semilla de riqueza.",
+            "¡Eres excelente administrando!",
+            "La disciplina hoy es la libertad mañana.",
+            "¡Sigue así, vas por muy buen camino!"
+        ];
+
+        function lanzarRefuerzo() {
+            const banner = document.getElementById('reinforcement');
+            banner.innerText = frases[Math.floor(Math.random() * frases.length)];
+            banner.classList.add('show');
+            setTimeout(() => banner.classList.remove('show'), 6000);
         }
 
-        // Intervalo de 5 minutos (300000 ms)
-        setInterval(mostrarFrase, 300000);
-        // Mostrar una al iniciar
-        setTimeout(mostrarFrase, 3000);
-
+        // Intervalo de 5 minutos
+        setInterval(lanzarRefuerzo, 300000);
+        
         // Registro del Service Worker
         if ('serviceWorker' in navigator) {
-            window.addEventListener('load', () => {
-                navigator.serviceWorker.register('./sw.js')
-                    .then(reg => console.log('Finance Gold PWA Lista'));
-            });
+            navigator.serviceWorker.register('./sw.js');
         }
-
-        // --- Mantén aquí todas tus funciones originales (init, agregarGasto, etc.) ---
-        // (Por brevedad no las repito, pero úsalas tal cual estaban en el código anterior)
     </script>
 </body>
 </html>
